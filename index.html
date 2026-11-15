@@ -169,6 +169,29 @@ input[type=checkbox]{width:20px;height:20px;padding:0;accent-color:var(--accent)
 #audioHint{margin:0 14px 6px;background:#e5003d;color:#fff;border-radius:12px}
 .shopit{display:flex;align-items:center;gap:12px;margin-bottom:8px}
 .shoeprev{background:var(--surface);border-radius:12px;padding:6px;flex:none;line-height:0}
+#dlgMsg{white-space:pre-line}
+.ghost.on{outline:2px solid var(--accent)}
+.poll{min-width:230px}.ptl{font-size:.78em;opacity:.7}.pq{font-weight:700;margin:2px 0 6px}
+.popt{position:relative;display:block;width:100%;text-align:left;background:rgba(128,128,128,.22);color:inherit;border-radius:10px;padding:8px 10px;margin-bottom:5px;overflow:hidden;font-weight:500}
+.popt.on{outline:2px solid var(--accent)}.pbar{position:absolute;left:0;top:0;bottom:0;background:rgba(88,101,242,.38)}
+.ptx{position:relative}.psm{font-size:.8em;opacity:.7}
+#gmUI{position:absolute;inset:0;z-index:7;background:var(--surface);color:var(--text);display:flex;flex-direction:column;overflow-y:auto}
+.tttg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:6px;width:min(80vw,300px);height:min(80vw,300px);margin:14px auto;flex:none}
+.ttc{font-size:min(16vw,64px);font-weight:800;padding:0;background:var(--other);color:var(--text);border-radius:12px;line-height:1}
+.tx{color:#e5252a}.to{color:#3b82f6}
+.rpsrow{display:flex;gap:14px;justify-content:center;margin:14px 0}
+.rpsb{font-size:44px;width:84px;height:84px;border-radius:20px;background:var(--other);color:var(--text);padding:0;line-height:1}
+.rpsb:disabled{opacity:.4}
+.gmc{text-align:center;padding:4px 16px}.gmbig{font-size:60px;line-height:1.2}
+.wdg{display:flex;flex-direction:column;gap:6px;width:min(74vw,290px);margin:10px auto;flex:none}
+.wdr{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.wdc{height:calc(min(74vw,290px)/5 - 5px);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.5em;border:2px solid var(--border);border-radius:6px}
+.wdc.g,.wdk button.g{background:#538d4e;color:#fff;border-color:#538d4e}
+.wdc.y,.wdk button.y{background:#b59f3b;color:#fff;border-color:#b59f3b}
+.wdc.x,.wdk button.x{background:#3a3a3c;color:#fff;border-color:#3a3a3c}
+.wdk{display:flex;gap:4px;justify-content:center;margin:4px 6px}
+.wdk button{flex:1;max-width:38px;min-width:0;padding:11px 0;border-radius:6px;font-size:.95em;background:var(--other);color:var(--text)}
+.wdk button.wide{max-width:56px}
 </style>
 </head>
 <body>
@@ -208,6 +231,11 @@ input[type=checkbox]{width:20px;height:20px;padding:0;accent-color:var(--accent)
     <div class="chbtns"><button type="button" id="chVoice">🎙 Activar voz</button><button type="button" class="ghost" id="chMute" hidden>🎙 Micrófono</button><button type="button" class="ghost" id="chResign">🏳️ Rendirse</button></div>
     <div class="note" id="chVoiceSt"></div>
   </div>
+  <div id="gmUI" hidden>
+    <div class="chhead"><button type="button" class="ghost" id="gmClose" aria-label="Cerrar">✖</button><div class="chtitle"><b id="gmTitle"></b><div id="gmStatus"></div></div></div>
+    <div id="gmBody"></div>
+    <div class="chbtns" id="gmBtns"></div>
+  </div>
   <div id="chIncoming" hidden><span id="chIncTxt"></span><button type="button" id="chAcc">Aceptar</button><button type="button" class="ghost" id="chDec">Rechazar</button></div>
   <div id="callMini" hidden><span id="miniTxt"></span><button type="button" class="ghost" id="miniOpen">Abrir</button></div>
   <div class="overlay" id="dlg" hidden><div class="card"><div id="dlgMsg" style="text-align:center"></div><input id="dlgIn" hidden><div class="row" style="gap:10px"><button type="button" class="ghost" id="dlgNo">Cancelar</button><button type="button" id="dlgYes">Aceptar</button></div></div></div>
@@ -228,6 +256,7 @@ input[type=checkbox]{width:20px;height:20px;padding:0;accent-color:var(--accent)
     <h1 id="pgTitle">💬 Chat</h1>
     <span class="status" id="status">Conectando…</span>
     <button type="button" class="ghost" id="bellBtn" hidden aria-label="Menciones">🔔</button>
+    <button type="button" class="ghost" id="gmOpen" hidden aria-label="Partida">🎮</button>
     <button type="button" class="ghost" id="chessOpen" hidden aria-label="Partida de ajedrez">♟</button>
     <button type="button" class="ghost" id="callOpen" hidden aria-label="Llamada del chat">📞</button>
     <button type="button" class="ghost" id="gear" hidden aria-label="Menú">☰</button>
@@ -239,6 +268,7 @@ input[type=checkbox]{width:20px;height:20px;padding:0;accent-color:var(--accent)
     <button type="button" class="nv" data-pg="rank">🏆 Ranking</button>
     <button type="button" class="nv" data-pg="shop">🛒 Tienda</button>
     <button type="button" class="nv" data-pg="mod" id="nvMod" hidden>🛡️ Moderación</button>
+    <button type="button" class="nv" data-pg="games">🎮 Juegos</button>
     <button type="button" class="nv" data-pg="prof">👤 Perfil</button>
     <button type="button" class="nv" data-pg="set">⚙️ Ajustes</button>
   </div>
@@ -281,6 +311,23 @@ input[type=checkbox]{width:20px;height:20px;padding:0;accent-color:var(--accent)
     <div class="page pane" id="pgMod" hidden>
       <div id="modList"></div>
       <div class="note">Rango 1: destacar · Rango 2: + fijar · Rango 3: + borrar mensajes · Rango 4: + silenciar en llamada y chat (chat máx. 24 h)</div>
+    </div>
+    <div class="page pane" id="pgGames" hidden>
+      <div class="dsec">♟ Ajedrez</div>
+      <div class="mrow"><div class="mn">🤖 Jugar contra el bot</div>
+        <div class="mb"><select id="botLvl"><option value="1">Fácil (~800)</option><option value="2" selected>Medio (~1200)</option><option value="3">Difícil (~1500)</option></select>
+        <select id="botCol"><option value="r">Color aleatorio</option><option value="w">Blancas</option><option value="b">Negras</option></select>
+        <button type="button" id="botGo">Jugar</button></div>
+        <div class="note">Contra una persona: ✉️ Privados → ♟ Desafiar</div></div>
+      <div class="dsec">👥 Con otra persona</div>
+      <div class="mrow"><div class="mb"><select id="gmUser" style="flex:1"></select></div>
+        <div class="mb"><button type="button" id="gmTtt">❌⭕ Tres en raya</button><button type="button" id="gmRps">✊✋✌️ Piedra, papel o tijeras</button></div></div>
+      <div class="dsec">🔤 Solo</div>
+      <div class="mrow"><div class="mb"><button type="button" id="gmWd1">🟩 Wordle (palabra del día)</button><button type="button" class="ghost" id="gmWd2">🎲 Wordle aleatorio</button></div></div>
+      <div class="dsec">🏅 Elo</div>
+      <div class="note" id="myElo"></div>
+      <div class="mb"><button type="button" class="ghost" id="eloC">♟ Ajedrez</button><button type="button" class="ghost" id="eloT">❌⭕ Tres en raya</button><button type="button" class="ghost" id="eloR">✊✋✌️ Piedra, papel o tijeras</button></div>
+      <div id="eloList"></div>
     </div>
     <div class="page pane" id="pgProf" hidden>
       <div class="profhead"><span class="mav" id="pfAv" style="width:72px;height:72px;font-size:30px"></span><div id="pfName" style="font-size:1.1em"></div></div>
@@ -369,6 +416,18 @@ window.FIREBASE_CONFIG = {
     return s;
   }
   /*I18N_END*/
+  [["🎮 Juegos", "🎮 Games", "🎮 Игры"], ["🤖 Jugar contra el bot", "🤖 Play against the bot", "🤖 Играть против бота"], ["Fácil (~800)", "Easy (~800)", "Лёгкий (~800)"], ["Medio (~1200)", "Medium (~1200)", "Средний (~1200)"], ["Difícil (~1500)", "Hard (~1500)", "Сложный (~1500)"], ["Color aleatorio", "Random color", "Случайный цвет"], ["Blancas", "White", "Белые"], ["Negras", "Black", "Чёрные"], ["Jugar", "Play", "Играть"], ["Contra una persona: ✉️ Privados → ♟ Desafiar", "Against a person: ✉️ Private → ♟ Challenge", "Против человека: ✉️ Личные → ♟ Вызвать"], ["👥 Con otra persona", "👥 With another person", "👥 С другим человеком"], ["Elige un usuario", "Choose a user", "Выберите пользователя"], ["Elige un usuario primero", "Choose a user first", "Сначала выберите пользователя"], ["❌⭕ Tres en raya", "❌⭕ Tic-tac-toe", "❌⭕ Крестики-нолики"], ["✊✋✌️ Piedra, papel o tijeras", "✊✋✌️ Rock, paper, scissors", "✊✋✌️ Камень, ножницы, бумага"], ["🔤 Solo", "🔤 Solo", "🔤 Одному"], ["🟩 Wordle (palabra del día)", "🟩 Wordle (word of the day)", "🟩 Wordle (слово дня)"], ["🎲 Wordle aleatorio", "🎲 Random Wordle", "🎲 Случайный Wordle"], ["Aún no hay partidas con Elo", "No rated games yet", "Пока нет рейтинговых игр"], ["🎮 ¡Empezó la partida!", "🎮 The game has started!", "🎮 Игра началась!"], ["🏆 ¡Ganaste!", "🏆 You won!", "🏆 Вы победили!"], ["🤝 Empate", "🤝 Draw", "🤝 Ничья"], ["Revancha", "Rematch", "Реванш"], ["Siguiente ronda", "Next round", "Следующий раунд"], ["Terminar partida", "Finish match", "Завершить матч"], ["Elige tu jugada", "Choose your move", "Выберите ход"], ["Tu rival ya eligió ✔", "Your opponent has chosen ✔", "Соперник уже выбрал ✔"], ["Esperando al rival…", "Waiting for the opponent…", "Ждём соперника…"], ["Ganaste la ronda", "You won the round", "Вы выиграли раунд"], ["Perdiste la ronda", "You lost the round", "Вы проиграли раунд"], ["Empate en la ronda", "Round tied", "Раунд вничью"], ["Partida terminada", "Game over", "Игра окончена"], ["Faltan letras", "Not enough letters", "Не хватает букв"], ["Ya jugaste la palabra de hoy. ¡Vuelve mañana!", "You already played today’s word. Come back tomorrow!", "Вы уже играли в слово дня. Возвращайтесь завтра!"], ["Nueva palabra aleatoria", "New random word", "Новое случайное слово"], ["🤖 Pensando…", "🤖 Thinking…", "🤖 Думает…"], ["📊 Encuesta", "📊 Poll", "📊 Опрос"], ["No se pudo votar", "Could not vote", "Не удалось проголосовать"], ["Necesitas rango 1 o más para usar comandos", "You need rank 1 or higher to use commands", "Для команд нужен ранг 1 или выше"], ["Comando desconocido. Usa /help", "Unknown command. Use /help", "Неизвестная команда. Используйте /help"], ["Uso: /poll \"Título\" opción1 opción2 (2 a 8 opciones)", "Usage: /poll \"Title\" option1 option2 (2 to 8 options)", "Использование: /poll \"Заголовок\" вариант1 вариант2 (от 2 до 8 вариантов)"], ["Comandos (rango 1 o más):\n/poll Título | opción 1 | opción 2 …\n/poll \"Título largo\" op1 op2 op3\n/help", "Commands (rank 1 or higher):\n/poll Title | option 1 | option 2 …\n/poll \"Long title\" op1 op2 op3\n/help", "Команды (ранг 1 или выше):\n/poll Заголовок | вариант 1 | вариант 2 …\n/poll \"Длинный заголовок\" в1 в2 в3\n/help"]].forEach(function(r){TR[r[0]]=[r[1],r[2]];});
+  TP.unshift(
+    [/^🏆 Ganó (.*)$/,'🏆 $1 wins','🏆 Победил(а) $1'],
+    [/^Ronda (\d+)$/,'Round $1','Раунд $1'],
+    [/^(\d+) votos$/,'$1 votes','$1 голосов'],
+    [/^Intento (\d)\/6$/,'Attempt $1/6','Попытка $1/6'],
+    [/^🎉 ¡Ganaste en (\d+) intentos?!$/,'🎉 You won in $1 attempts!','🎉 Вы победили за $1 попыток!'],
+    [/^😔 La palabra era (.*)$/,'😔 The word was $1','😔 Слово было $1'],
+    [/^🎮 Desafío enviado a (.*)$/,'🎮 Challenge sent to $1','🎮 Вызов отправлен: $1'],
+    [/^❌⭕ (.*) te desafía a tres en raya$/,'❌⭕ $1 challenges you to tic-tac-toe','❌⭕ $1 вызывает вас на крестики-нолики'],
+    [/^✊✋✌️ (.*) te desafía a piedra, papel o tijeras$/,'✊✋✌️ $1 challenges you to rock, paper, scissors','✊✋✌️ $1 вызывает вас на камень-ножницы-бумага']
+  );
   [["Sobrenombre", "Nickname", "Псевдоним"], ["Sobrenombre (máx. 16 letras)", "Nickname (max. 16 characters)", "Псевдоним (макс. 16 символов)"], ["Orejas de gato verdes", "Green cat ears", "Зелёные кошачьи ушки"], ["Zapatos de payaso", "Clown shoes", "Клоунские ботинки"], ["Aparecen en tu foto de perfil", "They show on your profile photo", "Отображаются на вашем фото профиля"], ["Comprado ✓", "Owned ✓", "Куплено ✓"], ["No tienes suficientes puntos", "You don’t have enough points", "Недостаточно очков"], ["¡Comprado!", "Purchased!", "Куплено!"], ["No se pudo comprar (¿actualizaste las reglas?)", "Could not buy (did you update the rules?)", "Не удалось купить (вы обновили правила?)"], ["Más objetos próximamente", "More items coming soon", "Скоро будет больше предметов"], ["Solo ADMINesqueloton puede usar esta foto", "Only ADMINesqueloton can use this photo", "Только ADMINesqueloton может использовать это фото"], ["🔊 Toca para activar el sonido", "🔊 Tap to enable sound", "🔊 Нажмите, чтобы включить звук"], ["🔄 Reconectar audio", "🔄 Reconnect audio", "🔄 Переподключить звук"], ["🔄 Reconectando audio…", "🔄 Reconnecting audio…", "🔄 Переподключение звука…"], ["🎙 Audio directo activado (sin efectos)", "🎙 Direct audio enabled (no effects)", "🎙 Включён прямой звук (без эффектов)"]].forEach(function(r){TR[r[0]]=[r[1],r[2]];});
   TP.unshift(
     [/^Puntos disponibles: (-?\d+)$/,'Available points: $1','Доступно очков: $1'],
@@ -511,7 +570,7 @@ window.FIREBASE_CONFIG = {
     try{localStorage.setItem('esq-session',JSON.stringify({id:id,hash:acc.hash}));}catch(e){}
     applySettings();
     $('auth').hidden=true;$('gear').hidden=false;$('callOpen').hidden=false;$('pass').value='';
-    loadLocalProf();showPage('chat');subscribe();render();textIn.focus();playIntro();startInbox();restoreGame();
+    loadLocalProf();showPage('chat');subscribe();render();textIn.focus();playIntro();startInbox();restoreGame();restoreGm();
   }
   $('logout').onclick=function(){
     try{localStorage.removeItem('esq-session');}catch(e){}
@@ -672,7 +731,7 @@ window.FIREBASE_CONFIG = {
     });
   }
   function setReply(m){
-    var t=(String(m.text||'').replace(/:e\d+:/g,'🖼')||(m.img?'🖼 imagen':(m.voice?'🎤 voz':''))).slice(0,80);
+    var t=(String(m.text||'').replace(/:e\d+:/g,'🖼')||(m.img?'🖼 imagen':(m.voice?'🎤 voz':(m.poll?'📊 '+m.poll.title:'')))).slice(0,80);
     replyTo={id:m.id,name:m.name||'Anónimo',text:t};
     $('replyTxt').textContent='Respondiendo a '+replyTo.name+': '+t;$('replyBar').hidden=false;textIn.focus();
   }
@@ -698,6 +757,7 @@ window.FIREBASE_CONFIG = {
       if(m.text){var p=el('div',/^(\s*(:e\d+:|🪀|🥏|🏐)\uFE0F?)+\s*$/.test(m.text)?'big':'');fillText(p,m.text);d.appendChild(p);var lc=previewFor(m.text);if(lc)d.appendChild(lc);}
       if(m.img&&/^https:\/\//.test(m.img)){var lk=el('a');lk.href=m.img;lk.target='_blank';lk.rel='noopener';var pi=el('img','pic');pi.src=m.img;pi.loading='lazy';pi.alt='imagen';lk.appendChild(pi);d.appendChild(lk);}
       if(m.imgId)d.appendChild(imgBlock(m.imgId));
+      if(m.poll)d.appendChild(pollEl(m));
       if(m.voice){var vb=el('button','vbtn',(curVoice&&curVoice.id===m.id?'⏸':'▶')+' 🎤 '+fmtDur(m.dur||0));vb.type='button';vb.onclick=function(){playVoice(m);};d.appendChild(vb);}
       var rx=m.reactions||{};
       var chips=el('div','rx');
@@ -736,6 +796,7 @@ window.FIREBASE_CONFIG = {
   $('form').onsubmit=function(e){
     e.preventDefault();
     var v=textIn.value.trim();if(!v||!me) return;
+    if(v.charAt(0)==='/'){if(runCommand(v)){textIn.value='';hideMB();typeStop();}return;}
     if(sendBlock(v))return;textIn.value='';hideMB();typeStop();sendMsg(v);
   };
   $('attach').onclick=function(){if(!me)return;if(!db){toast('Las imágenes necesitan Firebase conectado');return;}$('file').click();};
@@ -800,7 +861,7 @@ window.FIREBASE_CONFIG = {
 
   /* ---------- páginas, roles, menciones, privados estilo Discord ---------- */
   var ACCS={},ROLES={},PRES={},DMIN=[],DMOUT=[],FIXEDL=[],MENT=[],presTimer=null,curPage='chat';
-  var PAGES={chat:['pgChat','💬 Chat'],dm:['pgDm','✉️ Privados'],men:['pgMen','🔔 Menciones'],rank:['pgRank','🏆 Ranking'],shop:['pgShop','🛒 Tienda'],mod:['pgMod','🛡️ Moderación'],prof:['pgProf','👤 Perfil'],set:['pgSet','⚙️ Ajustes']};
+  var PAGES={chat:['pgChat','💬 Chat'],dm:['pgDm','✉️ Privados'],men:['pgMen','🔔 Menciones'],rank:['pgRank','🏆 Ranking'],shop:['pgShop','🛒 Tienda'],mod:['pgMod','🛡️ Moderación'],prof:['pgProf','👤 Perfil'],games:['pgGames','🎮 Juegos'],set:['pgSet','⚙️ Ajustes']};
   function showPage(p){
     if(!PAGES[p])p='chat';
     curPage=p;
@@ -813,6 +874,7 @@ window.FIREBASE_CONFIG = {
     if(p==='mod')renderMod();
     if(p==='prof')renderProfile();
     if(p==='shop')renderShop();
+    if(p==='games')renderGames();
     if(p==='chat')render(true);
     updateNavBadges();
   }
@@ -905,6 +967,7 @@ window.FIREBASE_CONFIG = {
 
   /* mensajes fijados */
   function snip(m){
+    if(m.poll)return '📊 '+String(m.poll.title).slice(0,60);
     if(m.text)return String(m.text).replace(/:e\d+:/g,'🖼').slice(0,70);
     return m.voice?'🎤':(m.img||m.imgId?'🖼':'');
   }
@@ -1000,6 +1063,7 @@ window.FIREBASE_CONFIG = {
   function unreadCount(peer){var r=readTs(peer);return DMIN.filter(function(m){return m.from===peer&&m.ts>r;}).length;}
   function unreadDmTotal(){var ps={};DMIN.forEach(function(m){ps[m.from]=1;});return Object.keys(ps).filter(function(p){return unreadCount(p)>0;}).length;}
   function dmListChanged(){
+    if(curPage==='games')renderGames();
     if(dmPeer)markRead(dmPeer.id);
     if(curPage==='dm')renderDmList();
     updateNavBadges();
@@ -1235,6 +1299,353 @@ window.FIREBASE_CONFIG = {
   $('dmText').addEventListener('input',function(){if(this.value.trim()&&dmPeer)typePing(dmPeer.id);else typeStop();});
   window.addEventListener('resize',function(){var bx=$('cBoard'),w=bx.offsetWidth;if(w)bx.style.height=w+'px';});
 
+  /* ---------- Elo ---------- */
+  var ELO={},RATED={},BOT_R={1:800,2:1200,3:1500},BOT_N={1:'Fácil',2:'Medio',3:'Difícil'};
+  function eloOf(uid,type){var e=ELO[uid];return(e&&typeof e[type]==='number')?e[type]:1200;}
+  function ratingOf(uid){return uid==='bot'?BOT_R[(CH&&CH.bot&&CH.bot.level)||2]:eloOf(uid,'chess');}
+  function eloExp(ra,rb){return 1/(1+Math.pow(10,(rb-ra)/400));}
+  function setElo(uid,type,val){
+    var cur=ELO[uid]||{},d={chess:eloOf(uid,'chess'),ttt:eloOf(uid,'ttt'),rps:eloOf(uid,'rps'),n:(cur.n||0)+1,ts:Date.now()};
+    d[type]=val;ELO[uid]=d;
+    if(db)db.doc('elo/'+uid).set(d).catch(function(){});
+  }
+  function eloToast(a,b){toast('🏅 Elo: '+b+' ('+(b-a>=0?'+':'')+(b-a)+')');}
+  function applyElo(type,a,b,sa){
+    var ra=eloOf(a,type),rb=eloOf(b,type),ea=eloExp(ra,rb),K=32;
+    var na=Math.round(ra+K*(sa-ea)),nb=Math.round(rb+K*((1-sa)-(1-ea)));
+    setElo(a,type,na);setElo(b,type,nb);
+    if(me&&a===me.id)eloToast(ra,na);else if(me&&b===me.id)eloToast(rb,nb);
+  }
+  function maybeRate(coll,type,id,g){
+    if(!db||!me||g.status!=='finished'||g.rated||RATED[id])return;
+    var r=g.result||'',a=g.from,b=g.to,sa,desig;
+    if(r.indexOf('mate:')===0||r.indexOf('win:')===0){var w=r.split(':')[1];sa=w===a?1:0;desig=w;}
+    else if(r.indexOf('resign:')===0){var l=r.slice(7);sa=l===a?0:1;desig=l===a?b:a;}
+    else if(r.indexOf('draw')===0){sa=0.5;desig=a<b?a:b;}
+    else return;
+    if(desig!==me.id)return;
+    RATED[id]=1;
+    applyElo(type,a,b,sa);
+    db.doc(coll+'/'+id).update({rated:true}).catch(function(){});
+  }
+
+  /* ---------- ajedrez contra el bot ---------- */
+  function openBot(level,col){
+    var game={from:me.id,fromName:me.name,to:'bot',toName:'🤖 Bot ('+BOT_N[level]+')',status:'active',white:col==='w'?me.id:'bot',fen:START,last:null,result:''};
+    var C={id:'bot',bot:{level:level},game:game,state:parseFen(START),sel:null,targets:[],unsub:null,vUnsub:null,peerId:'bot',peerName:game.toName,myColor:col,V:{pc:null,stream:null,pending:[],offer:null,audio:null,on:false}};
+    if(CH)leaveGame(true);
+    CH=C;$('chessOpen').hidden=false;showChess();
+    if(col==='b')botTurn();
+  }
+  function botTurn(){
+    var C=CH;if(!C||!C.bot||C.game.status!=='active')return;
+    C.thinking=true;renderChess();
+    setTimeout(function(){
+      if(CH!==C)return;
+      var mv=botPick(C.state,C.bot.level);C.thinking=false;
+      if(!mv){renderChess();return;}
+      var ns=applyMove(C.state,mv),res=gameOutcome(ns);
+      C.state=ns;C.game.fen=toFen(ns);C.game.last={f:mv.f,t:mv.t};C.sel=null;C.targets=[];
+      if(res){C.game.status='finished';C.game.result=res==='mate'?'mate:bot':res;botFinished(C);}
+      renderChess();
+    },80);
+  }
+  function botFinished(C){
+    var r=C.game.result||'',score=r==='mate:'+me.id?1:(r.indexOf('draw')===0?0.5:0);
+    var ra=eloOf(me.id,'chess'),nr=Math.round(ra+32*(score-eloExp(ra,BOT_R[C.bot.level])));
+    setElo(me.id,'chess',nr);eloToast(ra,nr);
+  }
+
+  /* ---------- página de juegos ---------- */
+  var gmElo='chess';
+  $('botGo').onclick=function(){
+    if(CH){toast('Ya tienes una partida abierta');showChess();return;}
+    var col=$('botCol').value;if(col==='r')col=Math.random()<0.5?'w':'b';
+    openBot(parseInt($('botLvl').value,10)||2,col);
+  };
+  function renderGames(){
+    if(!me)return;
+    var sel=$('gmUser'),cur=sel.value;sel.textContent='';
+    var o0=document.createElement('option');o0.value='';o0.textContent='Elige un usuario';sel.appendChild(o0);
+    Object.keys(ACCS).filter(function(id){return id!==me.id;}).sort(function(a,b){return ACCS[a].name.localeCompare(ACCS[b].name);}).forEach(function(id){
+      var o=document.createElement('option');o.value=id;o.textContent=ACCS[id].name;o.setAttribute('data-nt','1');sel.appendChild(o);
+    });
+    sel.value=cur;renderElo();
+  }
+  function renderElo(){
+    var box=$('eloList');box.textContent='';
+    $('eloC').className='ghost'+(gmElo==='chess'?' on':'');$('eloT').className='ghost'+(gmElo==='ttt'?' on':'');$('eloR').className='ghost'+(gmElo==='rps'?' on':'');
+    $('myElo').textContent='♟ '+eloOf(me.id,'chess')+'  ·  ❌⭕ '+eloOf(me.id,'ttt')+'  ·  ✊✋✌️ '+eloOf(me.id,'rps');
+    var rows=Object.keys(ELO).filter(function(id){return ACCS[id]&&typeof ELO[id][gmElo]==='number';}).sort(function(a,b){return ELO[b][gmElo]-ELO[a][gmElo];});
+    if(!rows.length){box.appendChild(el('div','note','Aún no hay partidas con Elo'));return;}
+    rows.forEach(function(id,i){
+      var row=el('div','rk'+(id===me.id?' me':''));
+      row.appendChild(el('span','n',['🥇','🥈','🥉'][i]||(i+1)+'.'));row.appendChild(nameEl(id,ACCS[id].name,null));row.appendChild(el('b',null,String(ELO[id][gmElo])));
+      box.appendChild(row);
+    });
+  }
+  $('eloC').onclick=function(){gmElo='chess';renderElo();};
+  $('eloT').onclick=function(){gmElo='ttt';renderElo();};
+  $('eloR').onclick=function(){gmElo='rps';renderElo();};
+
+  /* ---------- tres en raya y piedra, papel o tijeras ---------- */
+  var GM=null,WD=null,WDV=false;
+  function gmCreate(type){
+    var id=$('gmUser').value;
+    if(!id){toast('Elige un usuario primero');return;}
+    if(!db){toast('Necesita conexión a Firebase');return;}
+    if(GM){toast('Ya tienes una partida abierta');showGm();return;}
+    var a=ACCS[id],x=Math.random()<0.5?me.id:id;
+    db.collection('games2').add({type:type,from:me.id,fromName:me.name,to:id,toName:a.name,status:'pending',ts:Date.now(),x:x,o:x===me.id?id:me.id,board:'---------',turn:x,pa:'',pb:'',sa:0,sb:0,round:1,result:'',rated:false})
+      .then(function(ref){openGm(ref.id);toast('🎮 Desafío enviado a '+a.name);}).catch(function(){toast('No se pudo crear el desafío (¿actualizaste las reglas?)');});
+  }
+  $('gmTtt').onclick=function(){gmCreate('ttt');};
+  $('gmRps').onclick=function(){gmCreate('rps');};
+  function openGm(id,silent){
+    if(GM&&GM.id===id){if(!silent)showGm();return;}
+    if(GM)leaveGm(true);
+    var C={id:id,game:null,unsub:null};GM=C;
+    try{localStorage.setItem('esq-gm',id);}catch(e){}
+    C.unsub=db.doc('games2/'+id).onSnapshot(function(s){
+      if(GM!==C)return;
+      var g=s.exists?s.data():null;
+      if(!g){toast('La partida ya no existe');leaveGm(true);return;}
+      onGm(g);
+    },function(){});
+    $('gmOpen').hidden=false;
+    if(!silent)showGm();
+  }
+  function restoreGm(){
+    if(!db||GM)return;var id=null;try{id=localStorage.getItem('esq-gm');}catch(e){}
+    if(!id)return;
+    db.doc('games2/'+id).get().then(function(s){
+      var g=s.exists?s.data():null;
+      if(!g||(g.from!==me.id&&g.to!==me.id)||g.status!=='active'){try{localStorage.removeItem('esq-gm');}catch(e){}return;}
+      openGm(id,true);
+    }).catch(function(){});
+  }
+  function onGm(g){
+    var prev=GM.game;GM.game=g;
+    if(g.status==='declined'){toast((g.from===me.id?g.toName:g.fromName)+' rechazó el desafío');leaveGm(true);return;}
+    if(prev&&prev.status==='pending'&&g.status==='active'){toast('🎮 ¡Empezó la partida!');showGm();}
+    maybeRate('games2',g.type,GM.id,g);
+    renderGm();
+  }
+  function showGm(){if(GM&&!WDV){$('gmUI').hidden=false;renderGm();}}
+  function leaveGm(){
+    var C=GM;GM=null;
+    if(!WDV)$('gmUI').hidden=true;
+    $('gmOpen').hidden=true;
+    if(!C)return;
+    if(C.unsub)C.unsub();
+    try{localStorage.removeItem('esq-gm');}catch(e){}
+  }
+  $('gmOpen').onclick=function(){if(WDV)wdClose();showGm();};
+  $('gmClose').onclick=function(){
+    if(WDV){wdClose();return;}
+    if(GM&&GM.game&&(GM.game.status==='finished'))leaveGm(true);else $('gmUI').hidden=true;
+  };
+  var TTT_L=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  function tttWinner(b){for(var i=0;i<TTT_L.length;i++){var l=TTT_L[i];if(b[l[0]]!=='-'&&b[l[0]]===b[l[1]]&&b[l[0]]===b[l[2]])return b[l[0]];}return '';}
+  var RPS_E={r:'✊',p:'✋',s:'✌️'};
+  function rpsBeats(a,b){return (a==='r'&&b==='s')||(a==='s'&&b==='p')||(a==='p'&&b==='r');}
+  function gmResultText(g){
+    var r=g.result||'';
+    if(r==='draw')return '🤝 Empate';
+    if(r.indexOf('win:')===0){var w=r.slice(4);return w===me.id?'🏆 ¡Ganaste!':'🏆 Ganó '+(w===g.from?g.fromName:g.toName);}
+    return 'Partida terminada';
+  }
+  function gmBtn(txt,fn,ghost){var b=el('button',ghost?'ghost':'',txt);b.type='button';b.onclick=fn;$('gmBtns').appendChild(b);return b;}
+  function renderGm(){
+    if(!GM||!GM.game||WDV)return;
+    var g=GM.game,body=$('gmBody'),peer=g.from===me.id?g.toName:g.fromName;
+    body.textContent='';$('gmBtns').textContent='';
+    $('gmTitle').textContent=g.type==='ttt'?'❌⭕ Tres en raya':'✊✋✌️ Piedra, papel o tijeras';
+    var st='';
+    if(g.status==='pending')st='Esperando a que '+peer+' acepte…';
+    else if(g.status==='finished')st=gmResultText(g);
+    else if(g.type==='ttt')st=g.turn===me.id?'Tu turno':'Turno de '+peer;
+    else{st='Ronda '+g.round;}
+    $('gmStatus').textContent=st;
+    var info=el('div','gmc');info.setAttribute('data-nt','1');
+    if(g.type==='ttt'){
+      info.textContent='❌ '+(g.x===g.from?g.fromName:g.toName)+'  ·  ⭕ '+(g.o===g.from?g.fromName:g.toName);body.appendChild(info);
+      var grid=el('div','tttg');
+      for(var i=0;i<9;i++){
+        var ch=g.board.charAt(i),c=el('button','ttc');c.type='button';
+        if(ch!=='-'){var sp=el('span',ch==='X'?'tx':'to',ch==='X'?'✕':'◯');sp.setAttribute('data-nt','1');c.appendChild(sp);}
+        c.onclick=(function(k){return function(){tttClick(k);};})(i);grid.appendChild(c);
+      }
+      body.appendChild(grid);
+      if(g.status==='finished')gmBtn('Revancha',function(){var u={board:'---------',x:g.o,o:g.x,turn:g.o,result:'',status:'active',rated:false};Object.keys(u).forEach(function(k){g[k]=u[k];});renderGm();db.doc('games2/'+GM.id).update(u).catch(function(){});});
+    }else{
+      var mk=g.from===me.id?'pa':'pb',ok=g.from===me.id?'pb':'pa',mine=g[mk],theirs=g[ok];
+      info.textContent=me.name+'  '+(g.from===me.id?g.sa:g.sb)+' – '+(g.from===me.id?g.sb:g.sa)+'  '+peer;body.appendChild(info);
+      if(g.status==='active'){
+        if(g.pa&&g.pb){
+          var row=el('div','rpsrow');row.appendChild(el('div','gmbig',RPS_E[mine]));row.appendChild(el('div','gmbig','vs'));row.appendChild(el('div','gmbig',RPS_E[theirs]));body.appendChild(row);
+          var iw=rpsBeats(mine,theirs),tw=rpsBeats(theirs,mine);
+          var rt=el('div','gmc',iw?'Ganaste la ronda':(tw?'Perdiste la ronda':'Empate en la ronda'));body.appendChild(rt);
+          var sa=g.sa+(rpsBeats(g.pa,g.pb)?1:0),sb=g.sb+(rpsBeats(g.pb,g.pa)?1:0),fin=sa>=3||sb>=3;
+          gmBtn(fin?'Terminar partida':'Siguiente ronda',function(){
+            var u={pa:'',pb:'',sa:sa,sb:sb,round:g.round+1};
+            if(fin){u.status='finished';u.result='win:'+(sa>sb?g.from:g.to);}
+            Object.keys(u).forEach(function(k){g[k]=u[k];});renderGm();db.doc('games2/'+GM.id).update(u).catch(function(){});
+          });
+        }else{
+          body.appendChild(el('div','gmc',mine?'Esperando al rival…':'Elige tu jugada'));
+          var rr=el('div','rpsrow');
+          ['r','p','s'].forEach(function(k){var b=el('button','rpsb',RPS_E[k]);b.type='button';b.disabled=!!mine;if(mine===k)b.style.outline='3px solid var(--accent)';b.onclick=function(){rpsPick(k);};rr.appendChild(b);});
+          body.appendChild(rr);
+          if(theirs)body.appendChild(el('div','gmc','Tu rival ya eligió ✔'));
+        }
+      }
+      if(g.status==='finished')gmBtn('Revancha',function(){var u={pa:'',pb:'',sa:0,sb:0,round:1,result:'',status:'active',rated:false};Object.keys(u).forEach(function(k){g[k]=u[k];});renderGm();db.doc('games2/'+GM.id).update(u).catch(function(){});});
+    }
+  }
+  function tttClick(i){
+    var g=GM&&GM.game;if(!g||g.status!=='active'||g.turn!==me.id||g.board.charAt(i)!=='-')return;
+    var mark=g.x===me.id?'X':'O',b=g.board.slice(0,i)+mark+g.board.slice(i+1),w=tttWinner(b),u={board:b,turn:(g.x===me.id?g.o:g.x)};
+    if(w){u.status='finished';u.result='win:'+me.id;}else if(b.indexOf('-')<0){u.status='finished';u.result='draw';}
+    Object.keys(u).forEach(function(k){g[k]=u[k];});renderGm();
+    db.doc('games2/'+GM.id).update(u).catch(function(){toast('No se pudo enviar la jugada');});
+  }
+  function rpsPick(k){
+    var g=GM&&GM.game;if(!g||g.status!=='active')return;
+    var key=g.from===me.id?'pa':'pb';if(g[key])return;
+    g[key]=k;renderGm();
+    var u={};u[key]=k;db.doc('games2/'+GM.id).update(u).catch(function(){toast('No se pudo enviar la jugada');});
+  }
+
+  /* ---------- Wordle ---------- */
+  var WORDS="ABAJO,ABEJA,ACERO,ACTOR,AGUDO,AHORA,AIRES,AJENO,ALAMO,ALBUM,ALDEA,ALGAS,ALIAS,ALMAS,ALTAR,ALTOS,AMIGO,AMIGA,ANDAR,ANTES,ANUAL,APOYO,ARBOL,ARENA,ARMAS,ARROZ,ASADO,AVISO,AYUDA,BAILE,BAJAR,BALDE,BANCO,BARCO,BARRO,BESOS,BINGO,BLUSA,BOLSA,BOMBA,BOTAS,BRAZO,BREVE,BRISA,BRUJA,BUENO,BURLA,BUSCA,CABLE,CABRA,CACAO,CALLE,CALMA,CALOR,CAMAS,CAMPO,CANAL,CANTO,CARNE,CARRO,CARTA,CASAS,CAUSA,CAZAR,CERCA,CHICO,CHIVO,CIEGO,CIELO,CIFRA,CINCO,CIRCO,CLASE,CLAVE,COCHE,COFRE,COMER,COPAS,CORAL,CORTO,COSAS,COSTA,CREMA,CRUCE,CRUDA,CUERO,CUEVA,CURSO,CURVA,DATOS,DEBIL,DEDOS,DEUDA,DIETA,DISCO,DOLOR,DRAMA,DUDAR,DULCE,DUROS,ECHAR,ENERO,ENTRE,ENVIO,EPOCA,ERROR,ESTAR,ETAPA,EXTRA,FALDA,FALSO,FALLO,FECHA,FELIZ,FERIA,FIBRA,FIERA,FINAL,FIRMA,FLACO,FLORA,FLOTA,FONDO,FORMA,FRUTA,FUEGO,FUERA,GAFAS,GALLO,GANAR,GATOS,GENIO,GENTE,GLOBO,GOLPE,GORDO,GOZAR,GRADO,GRANO,GRAVE,GRITO,GRUPO,GUAPA,GUAPO,GUSTO,HABER,HABLA,HACER,HACIA,HADAS,HASTA,HECHO,HELAR,HEROE,HIELO,HIJOS,HOGAR,HOJAS,HONDO,HONOR,HORAS,HOTEL,HUEVO,HUIDA,HUMOR,IDEAL,IGUAL,JAMAS,JAULA,JOVEN,JOYAS,JUEGO,JULIO,JUNTO,JUSTO,KILOS,LABIO,LAGOS,LARGO,LATIR,LAZOS,LECHE,LECHO,LEJOS,LENTO,LETRA,LIBRE,LIBRO,LIGAR,LIMON,LINEA,LISTA,LLAVE,LLENA,LLENO,LOBOS,LOCOS,LUCHA,LUGAR,LUNES,MADRE,MAGIA,MAMAS,MANOS,MAPAS,MARCA,MARZO,MASAS,MAYOR,MEDIO,MEJOR,MENOS,MENTE,MESAS,METAL,METER,MIEDO,MISMO,MITAD,MOJAR,MONTE,MORAL,MORIR,MOSCA,MOTOR,MUEVE,MUJER,MUNDO,MUSEO,NACER,NARIZ,NEGRO,NIETO,NIEVE,NOBLE,NOCHE,NORTE,NOTAS,NUBES,NUEVE,NUNCA,OBRAS,OCASO,OESTE,ONDAS,ORDEN,OTROS,PADRE,PAGAR,PALMA,PAPEL,PARAR,PARTE,PASAR,PASTO,PATIO,PAUSA,PECHO,PEDIR,PELEA,PELOS,PENAL,PERRO,PESAR,PESCA,PIANO,PICAR,PILAS,PINTA,PISOS,PISTA,PLANO,PLATA,PLAYA,PLAZA,PLAZO,PLUMA,POBRE,PODER,POEMA,POLVO,PONER,PRADO,PRESA,PRIMA,PRIMO,PRISA,PULSO,PUNTO,QUESO,QUIEN,RADIO,RASGO,RAYOS,RAZON,REINA,RELOJ,RENTA,RESTO,REYES,RITMO,RIVAL,ROBAR,ROCAS,ROJOS,ROSAS,RUBIO,RUEDA,RUIDO,RUMBO,SABOR,SACAR,SALIR,SALSA,SALTO,SALUD,SANTO,SECAR,SELLO,SELVA,SERIE,SIGUE,SIGLO,SIGNO,SILLA,SIRVE,SITIO,SOBRE,SOCIO,SOLAR,SONAR,SUAVE,SUBIR,SUELO,SUENA,TABLA,TACOS,TALLA,TANTO,TARDE,TAREA,TECHO,TECLA,TEJER,TEMAS,TENIS,TIGRE,TINTA,TIPOS,TIRAR,TODOS,TOMAR,TORRE,TOTAL,TRAMA,TRAPO,TRATO,TRAJE,TRIGO,TROZO,TRUCO,TUMBA,TURNO,UNICO,UNIDO,USTED,VACAS,VACIO,VALER,VALOR,VASOS,VECES,VEJEZ,VELAS,VENIR,VENTA,VERBO,VERDE,VIAJE,VICIO,VIDAS,VIDEO,VIEJO,VIENE,VIGOR,VILLA,VINOS,VIRAL,VISTA,VIVEN,VIVIR,VOCAL,VOLAR,VOTOS,VUELO,ZONAS,ZORRO".split(',');
+  function wdDayKey(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+  function wdDayWord(k){var x=0;for(var i=0;i<k.length;i++)x=(x*31+k.charCodeAt(i))>>>0;return WORDS[x%WORDS.length];}
+  function wdStore(){return 'esq-wd-'+(me?me.id:'x')+'-'+WD.key;}
+  function wdStart(daily){
+    var key=daily?wdDayKey():null,word=daily?wdDayWord(key):WORDS[Math.floor(Math.random()*WORDS.length)],st=null;
+    if(daily){try{st=JSON.parse(localStorage.getItem('esq-wd-'+(me?me.id:'x')+'-'+key)||'null');}catch(e){}}
+    WD={word:word,daily:daily,key:key,guesses:st?st.g:[],cur:'',done:st?!!st.done:false,won:st?!!st.won:false};
+    WDV=true;$('gmUI').hidden=false;renderWd();
+    if(daily&&WD.done)toast('Ya jugaste la palabra de hoy. ¡Vuelve mañana!');
+  }
+  function wdClose(){WDV=false;WD=null;if(GM&&GM.game&&GM.game.status!=='finished')renderGm();$('gmUI').hidden=true;$('gmBtns').textContent='';}
+  function wdEval(guess,word){
+    var res=['x','x','x','x','x'],cnt={},i;
+    for(i=0;i<5;i++){if(guess.charAt(i)===word.charAt(i))res[i]='g';else cnt[word.charAt(i)]=(cnt[word.charAt(i)]||0)+1;}
+    for(i=0;i<5;i++){if(res[i]!=='g'&&cnt[guess.charAt(i)]>0){res[i]='y';cnt[guess.charAt(i)]--;}}
+    return res;
+  }
+  function wdKey(k){
+    if(!WD||WD.done)return;
+    if(k==='ENTER'){
+      if(WD.cur.length<5){toast('Faltan letras');return;}
+      WD.guesses.push(WD.cur);
+      if(WD.cur===WD.word){WD.done=true;WD.won=true;}else if(WD.guesses.length>=6){WD.done=true;WD.won=false;}
+      WD.cur='';
+      if(WD.daily){try{localStorage.setItem(wdStore(),JSON.stringify({g:WD.guesses,done:WD.done,won:WD.won}));}catch(e){}}
+    }else if(k==='BACK'){WD.cur=WD.cur.slice(0,-1);}
+    else if(/^[A-ZÑ]$/.test(k)&&WD.cur.length<5){WD.cur+=k;}
+    renderWd();
+  }
+  function renderWd(){
+    if(!WD)return;
+    var body=$('gmBody');body.textContent='';$('gmBtns').textContent='';
+    $('gmTitle').textContent='🟩 Wordle';
+    var st=WD.done?(WD.won?'🎉 ¡Ganaste en '+WD.guesses.length+(WD.guesses.length===1?' intento!':' intentos!'):'😔 La palabra era '+WD.word):'Intento '+Math.min(WD.guesses.length+1,6)+'/6';
+    $('gmStatus').textContent=st;
+    var grid=el('div','wdg'),best={},r,c;
+    for(r=0;r<6;r++){
+      var row=el('div','wdr'),gs=WD.guesses[r],ev=gs?wdEval(gs,WD.word):null;
+      for(c=0;c<5;c++){
+        var letter=gs?gs.charAt(c):(r===WD.guesses.length&&!WD.done?(WD.cur.charAt(c)||''):'');
+        var cell=el('div','wdc'+(ev?' '+ev[c]:''));cell.setAttribute('data-nt','1');cell.textContent=letter;row.appendChild(cell);
+        if(ev){var rank={x:1,y:2,g:3},old=best[letter];if(!old||rank[ev[c]]>rank[old])best[letter]=ev[c];}
+      }
+      grid.appendChild(row);
+    }
+    body.appendChild(grid);
+    var kb=el('div');
+    ['QWERTYUIOP','ASDFGHJKLÑ','⏎ZXCVBNM⌫'].forEach(function(rw){
+      var kr=el('div','wdk');
+      rw.split('').forEach(function(ch){
+        var code=ch==='⏎'?'ENTER':(ch==='⌫'?'BACK':ch),b=el('button',(best[ch]||'')+((ch==='⏎'||ch==='⌫')?' wide':''));
+        b.type='button';b.setAttribute('data-nt','1');b.textContent=ch;b.onclick=function(){wdKey(code);};kr.appendChild(b);
+      });
+      kb.appendChild(kr);
+    });
+    body.appendChild(kb);
+    if(WD.done&&!WD.daily)gmBtn('Nueva palabra aleatoria',function(){wdStart(false);});
+  }
+  $('gmWd1').onclick=function(){wdStart(true);};
+  $('gmWd2').onclick=function(){wdStart(false);};
+  document.addEventListener('keydown',function(e){
+    if(!WDV||!WD||$('gmUI').hidden)return;
+    var a=document.activeElement;if(a&&/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName))return;
+    if(e.ctrlKey||e.metaKey||e.altKey)return;
+    var k=e.key;
+    if(k==='Enter')wdKey('ENTER');else if(k==='Backspace')wdKey('BACK');else if(k&&k.length===1){var u=k.toUpperCase();if(/^[A-ZÑ]$/.test(u))wdKey(u);}
+  });
+
+  /* ---------- comandos y encuestas ---------- */
+  var HELP_TXT="Comandos (rango 1 o más):\n/poll Título | opción 1 | opción 2 …\n/poll \"Título largo\" op1 op2 op3\n/help",USO_TXT="Uso: /poll \"Título\" opción1 opción2 (2 a 8 opciones)";
+  function parsePoll(s){
+    s=(s||'').trim();if(!s)return null;
+    var parts=[];
+    if(s.indexOf('|')>=0)parts=s.split('|').map(function(x){return x.trim();}).filter(Boolean);
+    else{var re=/"([^"]+)"|“([^”]+)”|(\S+)/g,m;while((m=re.exec(s)))parts.push(m[1]||m[2]||m[3]);}
+    if(parts.length<3||parts.length>9)return null;
+    return {title:parts[0].slice(0,80),options:parts.slice(1).map(function(o){return o.slice(0,40);})};
+  }
+  function runCommand(v){
+    if(myRank()<1){toast('Necesitas rango 1 o más para usar comandos');return false;}
+    var sp=v.indexOf(' '),cmd=(sp<0?v:v.slice(0,sp)).toLowerCase(),args=sp<0?'':v.slice(sp+1);
+    if(cmd==='/poll'){
+      var p=parsePoll(args);
+      if(!p){toast(USO_TXT);return false;}
+      if(sendBlock(''))return false;
+      sendMsg('',null,{poll:p,votes:{}});return true;
+    }
+    if(cmd==='/help'){uiDialog(HELP_TXT,{},function(){});return true;}
+    toast('Comando desconocido. Usa /help');return false;
+  }
+  function pollEl(m){
+    var box=el('div','poll'),votes=m.votes||{},cnt=m.poll.options.map(function(){return 0;}),tot=0;
+    Object.keys(votes).forEach(function(u){var x=votes[u];if(typeof x==='number'&&x>=0&&x<cnt.length){cnt[x]++;tot++;}});
+    box.appendChild(el('div','ptl','📊 Encuesta'));
+    var tt=el('div','pq');tt.setAttribute('data-nt','1');tt.textContent=m.poll.title;box.appendChild(tt);
+    var mine=me?votes[me.id]:undefined;
+    m.poll.options.forEach(function(o,i){
+      var b=el('button','popt'+(mine===i?' on':''));b.type='button';
+      var bar=el('span','pbar');bar.style.width=(tot?Math.round(100*cnt[i]/tot):0)+'%';b.appendChild(bar);
+      var tx=el('span','ptx');tx.setAttribute('data-nt','1');tx.textContent=o+' · '+cnt[i]+(tot?' ('+Math.round(100*cnt[i]/tot)+'%)':'');b.appendChild(tx);
+      b.onclick=function(){votePoll(m,i);};box.appendChild(b);
+    });
+    box.appendChild(el('div','psm',tot+' votos'));
+    return box;
+  }
+  function votePoll(m,i){
+    if(!me)return;
+    m.votes=m.votes||{};
+    var nv=(m.votes[me.id]===i)?-1:i;m.votes[me.id]=nv;render();
+    var o={};o['votes.'+me.id]=nv;
+    if(db)db.doc('messages/'+m.id).update(o).catch(function(){toast('No se pudo votar');});
+  }
+  textIn.addEventListener('input',function(){
+    var m=this.value.match(/^\/([a-z]*)$/i);
+    if(!m||!me||myRank()<1)return;
+    var q=m[1].toLowerCase(),opts=[['/poll','📊 /poll "Título" op1 op2'],['/help','❔ /help']].filter(function(o){return o[0].slice(1).indexOf(q)===0;});
+    if(!opts.length){hideMB();return;}
+    mBox.textContent='';
+    opts.forEach(function(o){
+      var b=el('button','mopt',o[1]);b.type='button';b.setAttribute('data-nt','1');
+      b.onmousedown=b.ontouchstart=function(e){e.preventDefault();};
+      b.onclick=function(){textIn.value=o[0]+' ';hideMB();textIn.focus();};
+      mBox.appendChild(b);
+    });
+    mBox.hidden=false;
+  });
+
   /* ---------- diálogos propios ---------- */
   var dlgCb=null;
   function uiDialog(msg,opts,cb){
@@ -1338,12 +1749,21 @@ window.FIREBASE_CONFIG = {
       });
       typReady=true;renderTyping();
     },function(){}));
+    inboxUnsubs.push(db.collection('elo').onSnapshot(function(s){ELO={};s.docs.forEach(function(d){ELO[d.id]=d.data();});if(curPage==='games')renderElo();if(CH)renderChess();},function(){}));
+    inboxUnsubs.push(db.collection('games2').where('to','==',me.id).onSnapshot(function(s){
+      s.docChanges().forEach(function(ch){
+        var g=ch.doc.data(),id=ch.doc.id;
+        if(ch.type==='added'&&inboxReady.game2&&g.status==='pending'&&Math.abs(Date.now()-g.ts)<120000&&!GM)showChInc(id,g,'games2');
+        else if(chInc&&chInc.kind==='games2'&&chInc.id===id&&g.status!=='pending')hideChInc();
+      });
+      inboxReady.game2=true;
+    },function(){}));
     typTimer=setInterval(renderTyping,1000);
     beat();presTimer=setInterval(beat,30000);
   }
   function stopInbox(){
     inboxUnsubs.forEach(function(u){try{u();}catch(e){}});inboxUnsubs=[];
-    closeDm();leaveCall();leaveGame(true);hideChInc();lastPeerSnap=null;cpList=[];prevPeers=0;ACCS={};ROLES={};PROFS={};PURCH={};TYPING={};TYPSEEN={};typReady=false;if(typTimer){clearInterval(typTimer);typTimer=null;}PRES={};DMIN=[];DMOUT=[];FIXEDL=[];MENT=[];if(presTimer){clearInterval(presTimer);presTimer=null;}renderPins();$('callOpen').textContent='📞';
+    closeDm();leaveCall();leaveGame(true);leaveGm(true);hideChInc();lastPeerSnap=null;cpList=[];prevPeers=0;ACCS={};ROLES={};PROFS={};PURCH={};ELO={};TYPING={};TYPSEEN={};typReady=false;if(typTimer){clearInterval(typTimer);typTimer=null;}PRES={};DMIN=[];DMOUT=[];FIXEDL=[];MENT=[];if(presTimer){clearInterval(presTimer);presTimer=null;}renderPins();$('callOpen').textContent='📞';
   }
 
   /* ---------- llamada grupal del chat (WebRTC en malla) ---------- */
@@ -1750,19 +2170,105 @@ window.FIREBASE_CONFIG = {
     return '';
   }
 
+  /* ---------- bot de ajedrez ---------- */
+  var PV={p:100,n:320,b:330,r:500,q:900,k:0};
+  var PST={
+    p:[0,0,0,0,0,0,0,0,50,50,50,50,50,50,50,50,10,10,20,30,30,20,10,10,5,5,10,25,25,10,5,5,0,0,0,20,20,0,0,0,5,-5,-10,0,0,-10,-5,5,5,10,10,-20,-20,10,10,5,0,0,0,0,0,0,0,0],
+    n:[-50,-40,-30,-30,-30,-30,-40,-50,-40,-20,0,0,0,0,-20,-40,-30,0,10,15,15,10,0,-30,-30,5,15,20,20,15,5,-30,-30,0,15,20,20,15,0,-30,-30,5,10,15,15,10,5,-30,-40,-20,0,5,5,0,-20,-40,-50,-40,-30,-30,-30,-30,-40,-50],
+    b:[-20,-10,-10,-10,-10,-10,-10,-20,-10,0,0,0,0,0,0,-10,-10,0,5,10,10,5,0,-10,-10,5,5,10,10,5,5,-10,-10,0,10,10,10,10,0,-10,-10,10,10,10,10,10,10,-10,-10,5,0,0,0,0,5,-10,-20,-10,-10,-10,-10,-10,-10,-20],
+    r:[0,0,0,0,0,0,0,0,5,10,10,10,10,10,10,5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,0,0,0,5,5,0,0,0],
+    q:[-20,-10,-10,-5,-5,-10,-10,-20,-10,0,0,0,0,0,0,-10,-10,0,5,5,5,5,0,-10,-5,0,5,5,5,5,0,-5,0,0,5,5,5,5,0,-5,-10,5,5,5,5,5,0,-10,-10,0,5,0,0,0,0,-10,-20,-10,-10,-5,-5,-10,-10,-20],
+    k:[-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-20,-30,-30,-40,-40,-30,-30,-20,-10,-20,-20,-20,-20,-20,-20,-10,20,20,0,0,0,0,20,20,20,30,10,0,0,10,30,20]
+  };
+  function evalPos(s){
+    var sc=0;
+    for(var i=0;i<64;i++){
+      var p=s.b[i];if(!p)continue;
+      var t=p.toLowerCase();
+      if(p===p.toUpperCase())sc+=PV[t]+PST[t][i];else sc-=PV[t]+PST[t][i^56];
+    }
+    return sc;
+  }
+  var botDeadline=0,botNodes=0;
+  function moveOrder(s,m){
+    var v=0,cap=s.b[m.t];
+    if(cap)v=10*PV[cap.toLowerCase()]-PV[s.b[m.f].toLowerCase()]/10;
+    if(m.ep)v=900;if(m.p)v+=800;
+    return v;
+  }
+  function byOrder(s){return function(a,b){return moveOrder(s,b)-moveOrder(s,a);};}
+  function quiesce(s,alpha,beta,qd){
+    var stand=(s.turn==='w'?1:-1)*evalPos(s);
+    if(qd<=0||stand>=beta)return stand>=beta?beta:stand;
+    if(stand>alpha)alpha=stand;
+    var ms=legalMoves(s).filter(function(m){return s.b[m.t]||m.ep||m.p;}).sort(byOrder(s));
+    for(var i=0;i<ms.length;i++){
+      var v=-quiesce(applyMove(s,ms[i]),-beta,-alpha,qd-1);
+      if(v>=beta)return beta;
+      if(v>alpha)alpha=v;
+    }
+    return alpha;
+  }
+  function botSearch(s,depth,alpha,beta,ply){
+    if((++botNodes&511)===0&&Date.now()>botDeadline)throw 'time';
+    var ms=legalMoves(s);
+    if(!ms.length)return inCheck(s)?-100000+ply:0;
+    if(s.half>=100)return 0;
+    if(depth<=0)return quiesce(s,alpha,beta,3);
+    ms.sort(byOrder(s));
+    for(var i=0;i<ms.length;i++){
+      var v=-botSearch(applyMove(s,ms[i]),depth-1,-beta,-alpha,ply+1);
+      if(v>=beta)return beta;
+      if(v>alpha)alpha=v;
+    }
+    return alpha;
+  }
+  function botPick(s,level){
+    var ms=legalMoves(s);
+    if(!ms.length)return null;
+    if(level===1&&Math.random()<0.3)return ms[Math.floor(Math.random()*ms.length)];
+    var maxD=level===1?1:(level===2?2:4),tl=level===1?250:(level===2?800:2200),noise=level===1?80:(level===2?15:0);
+    botDeadline=Date.now()+tl;botNodes=0;
+    ms.sort(byOrder(s));
+    var best=ms[0];
+    for(var d=1;d<=maxD;d++){
+      var cur=null,curScore=-Infinity,alpha=-Infinity;
+      try{
+        for(var i=0;i<ms.length;i++){
+          var sc=-botSearch(applyMove(s,ms[i]),d-1,-Infinity,noise?Infinity:-alpha,1);
+          if(noise)sc+=Math.random()*noise;
+          if(sc>curScore){curScore=sc;cur=ms[i];}
+          if(sc>alpha)alpha=sc;
+        }
+      }catch(e){if(e!=='time')throw e;break;}
+      best=cur;
+      var bi=ms.indexOf(cur);if(bi>0){ms.splice(bi,1);ms.unshift(cur);}
+      if(curScore>90000)break;
+    }
+    return best;
+  }
+
   /* ---------- partida de ajedrez + voz ---------- */
   var CH=null,chInc=null;
   var GLYPH={k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'};
   function showChess(){if(CH){$('chessUI').hidden=false;renderChess();}}
-  function showChInc(id,g){chInc={id:id,g:g};$('chIncTxt').textContent='♟ '+g.fromName+' te desafía a una partida';$('chIncoming').hidden=false;try{if(navigator.vibrate)navigator.vibrate([250,120,250]);}catch(e){}}
+  function showChInc(id,g,kind){
+    chInc={id:id,g:g,kind:kind||'chess'};
+    var t=g.type==='ttt'?'❌⭕ '+g.fromName+' te desafía a tres en raya':(g.type==='rps'?'✊✋✌️ '+g.fromName+' te desafía a piedra, papel o tijeras':'♟ '+g.fromName+' te desafía a una partida');
+    $('chIncTxt').textContent=t;$('chIncoming').hidden=false;try{if(navigator.vibrate)navigator.vibrate([250,120,250]);}catch(e){}
+  }
   function hideChInc(){chInc=null;$('chIncoming').hidden=true;}
   $('chAcc').onclick=function(){
-    if(!chInc)return;var id=chInc.id;
+    if(!chInc)return;var id=chInc.id,kind=chInc.kind;
+    if(kind==='games2'){
+      if(GM){toast('Ya tienes una partida abierta');return;}
+      hideChInc();db.doc('games2/'+id).update({status:'active'}).then(function(){openGm(id);}).catch(function(){toast('No se pudo aceptar');});return;
+    }
     if(CH){toast('Ya tienes una partida abierta');return;}
     hideChInc();
     db.doc('games/'+id).update({status:'active'}).then(function(){openGame(id);}).catch(function(){toast('No se pudo aceptar');});
   };
-  $('chDec').onclick=function(){if(!chInc)return;var id=chInc.id;hideChInc();db.doc('games/'+id).update({status:'declined'}).catch(function(){});};
+  $('chDec').onclick=function(){if(!chInc)return;var id=chInc.id,coll=chInc.kind==='games2'?'games2':'games';hideChInc();db.doc(coll+'/'+id).update({status:'declined'}).catch(function(){});};
   $('chessBtn').onclick=function(){
     if(!dmPeer||!db){toast('El ajedrez necesita Firebase conectado');return;}
     if(CH){toast('Ya tienes una partida abierta');showChess();return;}
@@ -1807,6 +2313,7 @@ window.FIREBASE_CONFIG = {
     CH.myColor=g.white===me.id?'w':'b';
     if(g.status==='declined'){toast(CH.peerName+' rechazó el desafío');leaveGame(true);return;}
     CH.state=parseFen(g.fen);
+    maybeRate('games','chess',CH.id,g);
     if(!prev||prev.fen!==g.fen){CH.sel=null;CH.targets=[];}
     if(prev&&prev.status==='pending'&&g.status==='active'){toast('♟ ¡Empezó la partida!');$('chessUI').hidden=false;}
     renderChess();
@@ -1826,11 +2333,13 @@ window.FIREBASE_CONFIG = {
     var g=CH.game,s=CH.state,flip=CH.myColor==='b';
     $('chTitle').textContent='♟ '+me.name+' vs '+CH.peerName;
     var wn=g.white===g.from?g.fromName:g.toName,bn=g.white===g.from?g.toName:g.fromName;
-    $('chInfo').textContent='⚪ '+wn+(CH.myColor==='w'?' (tú)':'')+'  ·  ⚫ '+bn+(CH.myColor==='b'?' (tú)':'');
+    var bid=(g.white===g.from?g.to:g.from);
+    $('chInfo').textContent='⚪ '+wn+' ['+ratingOf(g.white)+']'+(CH.myColor==='w'?' (tú)':'')+'  ·  ⚫ '+bn+' ['+ratingOf(bid)+']'+(CH.myColor==='b'?' (tú)':'');
     var st='';
     if(g.status==='pending')st='Esperando a que '+CH.peerName+' acepte…';
     else if(g.status==='finished')st=resultText(g);
     else{st=s.turn===CH.myColor?'Tu turno':'Turno de '+CH.peerName;if(inCheck(s))st+=' · ¡Jaque!';}
+    if(CH.bot&&CH.thinking&&g.status==='active')st='🤖 Pensando…';
     $('chStatus').textContent=st;
     $('chResign').hidden=g.status!=='active';
     var box=$('cBoard');box.textContent='';
@@ -1864,12 +2373,13 @@ window.FIREBASE_CONFIG = {
     if(res){upd.status='finished';upd.result=res==='mate'?'mate:'+me.id:res;}
     CH.state=ns;CH.sel=null;CH.targets=[];CH.game.fen=fen;CH.game.last=upd.last;
     if(res){CH.game.status='finished';CH.game.result=upd.result;}
+    if(CH.bot){renderChess();if(res)botFinished(CH);else botTurn();return;}
     db.doc('games/'+CH.id).update(upd).catch(function(){toast('No se pudo enviar la jugada');});
     renderChess();
   }
   $('chResign').onclick=function(){
     if(!CH||!CH.game||CH.game.status!=='active')return;
-    uiConfirm('¿Rendirte?',function(){if(!CH)return;db.doc('games/'+CH.id).update({status:'finished',result:'resign:'+me.id}).catch(function(){toast('No se pudo rendir');});});
+    uiConfirm('¿Rendirte?',function(){if(!CH)return;if(CH.bot){CH.game.status='finished';CH.game.result='resign:'+me.id;botFinished(CH);renderChess();return;}db.doc('games/'+CH.id).update({status:'finished',result:'resign:'+me.id}).catch(function(){toast('No se pudo rendir');});});
   };
   $('chClose').onclick=function(){
     if(!CH){$('chessUI').hidden=true;return;}
@@ -1930,6 +2440,8 @@ window.FIREBASE_CONFIG = {
   }
   function renderChessVoice(){
     if(!CH)return;var V=CH.V;
+    if(CH.bot){$('chVoice').hidden=true;$('chMute').hidden=true;$('chVoiceSt').textContent='';return;}
+    $('chVoice').hidden=false;
     $('chVoice').textContent=V.on?'📴 Terminar voz':'🎙 Activar voz';
     $('chMute').hidden=!V.on;
     if(V.on){var t=V.stream&&V.stream.getAudioTracks()[0];$('chMute').textContent=(t&&!t.enabled)?'🔇 Silenciado':'🎙 Micrófono';}
