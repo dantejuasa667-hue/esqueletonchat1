@@ -197,6 +197,9 @@ input[type=checkbox]{width:20px;height:20px;padding:0;accent-color:var(--accent)
 .ctile .cn,.ctile .cs{position:relative;z-index:1;text-shadow:0 1px 3px #000}
 #meVid{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;border-radius:15px;transform:scaleX(-1)}
 .mecard .cn{position:relative;z-index:1;text-shadow:0 1px 3px #000}
+#rlUI{position:absolute;inset:0;z-index:7;background:#000;color:#fff;display:flex;flex-direction:column}
+#rlUI .chhead{background:var(--surface);color:var(--text)}
+#rlFrame{flex:1;min-height:0;width:100%;border:0;background:#000}
 </style>
 </head>
 <body>
@@ -240,6 +243,10 @@ input[type=checkbox]{width:20px;height:20px;padding:0;accent-color:var(--accent)
     <div class="chhead"><button type="button" class="ghost" id="gmClose" aria-label="Cerrar">✖</button><div class="chtitle"><b id="gmTitle"></b><div id="gmStatus"></div></div></div>
     <div id="gmBody"></div>
     <div class="chbtns" id="gmBtns"></div>
+  </div>
+  <div id="rlUI" hidden>
+    <div class="chhead"><button type="button" class="ghost" id="rlClose" aria-label="Cerrar">✖</button><div class="chtitle"><b>🕹️ RLPS</b><div id="rlStatus"></div></div><button type="button" class="ghost" id="rlFull" aria-label="Pantalla completa">⛶</button></div>
+    <iframe id="rlFrame" title="RLPS" sandbox="allow-scripts" allow="autoplay; fullscreen" src="about:blank"></iframe>
   </div>
   <div id="chIncoming" hidden><span id="chIncTxt"></span><button type="button" id="chAcc">Aceptar</button><button type="button" class="ghost" id="chDec">Rechazar</button></div>
   <div id="callMini" hidden><span id="miniTxt"></span><button type="button" class="ghost" id="miniOpen">Abrir</button></div>
@@ -328,7 +335,7 @@ input[type=checkbox]{width:20px;height:20px;padding:0;accent-color:var(--accent)
       <div class="mrow"><div class="mb"><select id="gmUser" style="flex:1"></select></div>
         <div class="mb"><button type="button" id="gmTtt">❌⭕ Tres en raya</button><button type="button" id="gmRps">✊✋✌️ Piedra, papel o tijeras</button></div></div>
       <div class="dsec">🔤 Solo</div>
-      <div class="mrow"><div class="mb"><button type="button" id="gmWd1">🟩 Wordle (palabra del día)</button><button type="button" class="ghost" id="gmWd2">🎲 Wordle aleatorio</button></div></div>
+      <div class="mrow"><div class="mb"><button type="button" id="gmWd1">🟩 Wordle (palabra del día)</button><button type="button" class="ghost" id="gmWd2">🎲 Wordle aleatorio</button><button type="button" id="gmRl">🕹️ RLPS</button></div></div>
       <div class="dsec">🏅 Elo</div>
       <div class="note" id="myElo"></div>
       <div class="mb"><button type="button" class="ghost" id="eloC">♟ Ajedrez</button><button type="button" class="ghost" id="eloT">❌⭕ Tres en raya</button><button type="button" class="ghost" id="eloR">✊✋✌️ Piedra, papel o tijeras</button></div>
@@ -421,6 +428,7 @@ window.FIREBASE_CONFIG = {
     return s;
   }
   /*I18N_END*/
+  [["Cargando RLPS… (puede tardar un poco)", "Loading RLPS… (this may take a while)", "Загрузка RLPS… (это может занять время)"], ["No se encontró rlps.html (súbelo junto a index.html)", "rlps.html was not found (upload it next to index.html)", "Файл rlps.html не найден (загрузите его рядом с index.html)"], ["Pulsa la bandera verde para empezar", "Press the green flag to start", "Нажмите зелёный флажок, чтобы начать"]].forEach(function(r){TR[r[0]]=[r[1],r[2]];});
   [["🗑 Borrar cuenta", "🗑 Delete account", "🗑 Удалить аккаунт"], ["Tu cuenta fue eliminada", "Your account was deleted", "Ваш аккаунт был удалён"]].forEach(function(r){TR[r[0]]=[r[1],r[2]];});
   TP.unshift(
     [/^Cuenta borrada: (.*)$/,'Account deleted: $1','Аккаунт удалён: $1'],
@@ -1719,6 +1727,34 @@ window.FIREBASE_CONFIG = {
     deleteAccountData(id).then(function(){toast('Cuenta borrada: '+name);}).catch(function(){toast('No se pudo borrar (¿actualizaste las reglas?)');});
   }
 
+  /* ---------- RLPS (proyecto externo: rlps.html) ---------- */
+  var RL_URL='rlps.html',rlTok=0;
+  function rlOpen(){
+    var tok=++rlTok;
+    $('rlUI').hidden=false;
+    var f=$('rlFrame'),st=$('rlStatus');
+    st.textContent='Cargando RLPS… (puede tardar un poco)';
+    function go(){if(tok!==rlTok)return;f.onload=function(){st.textContent='Pulsa la bandera verde para empezar';};f.src=RL_URL;}
+    try{
+      fetch(RL_URL,{method:'HEAD',cache:'no-store'}).then(function(r){
+        if(tok!==rlTok)return;
+        if(r&&r.ok===false){st.textContent='No se encontró rlps.html (súbelo junto a index.html)';return;}
+        go();
+      }).catch(go);
+    }catch(e){go();}
+  }
+  function rlClose(){
+    rlTok++;
+    var f=$('rlFrame');
+    $('rlUI').hidden=true;f.onload=null;f.src='about:blank';$('rlStatus').textContent='';
+  }
+  $('gmRl').onclick=rlOpen;
+  $('rlClose').onclick=rlClose;
+  $('rlFull').onclick=function(){
+    var f=$('rlFrame');
+    try{if(document.fullscreenElement){document.exitFullscreen();}else if(f.requestFullscreen){f.requestFullscreen();}else if(f.webkitRequestFullscreen){f.webkitRequestFullscreen();}}catch(e){}
+  };
+
   /* ---------- diálogos propios ---------- */
   var dlgCb=null;
   function uiDialog(msg,opts,cb){
@@ -1833,7 +1869,7 @@ window.FIREBASE_CONFIG = {
   }
   function stopInbox(){
     inboxUnsubs.forEach(function(u){try{u();}catch(e){}});inboxUnsubs=[];
-    closeDm();leaveCall();leaveGame(true);leaveGm(true);hideChInc();lastPeerSnap=null;cpList=[];prevPeers=0;ACCS={};accsReady=false;selfDeleting=false;ROLES={};PROFS={};PURCH={};ELO={};TYPING={};TYPSEEN={};typReady=false;if(typTimer){clearInterval(typTimer);typTimer=null;}PRES={};DMIN=[];DMOUT=[];FIXEDL=[];MENT=[];if(presTimer){clearInterval(presTimer);presTimer=null;}renderPins();$('callOpen').textContent='📞';
+    closeDm();leaveCall();leaveGame(true);leaveGm(true);rlClose();hideChInc();lastPeerSnap=null;cpList=[];prevPeers=0;ACCS={};accsReady=false;selfDeleting=false;ROLES={};PROFS={};PURCH={};ELO={};TYPING={};TYPSEEN={};typReady=false;if(typTimer){clearInterval(typTimer);typTimer=null;}PRES={};DMIN=[];DMOUT=[];FIXEDL=[];MENT=[];if(presTimer){clearInterval(presTimer);presTimer=null;}renderPins();$('callOpen').textContent='📞';
   }
 
   /* ---------- llamada grupal del chat (WebRTC en malla) ---------- */
