@@ -353,8 +353,7 @@ input[type=checkbox]{width:20px;height:20px;padding:0;accent-color:var(--accent)
       <label><span>Mi etiqueta</span><input id="pfTag" maxlength="12" placeholder="Etiqueta (máx. 12 letras)" style="flex:1"><button type="button" id="pfTagSave">Guardar</button></label>
       <div class="note" id="pfTagNote"></div>
       <label><span>Sobrenombre</span><input id="pfNick" maxlength="16" placeholder="Sobrenombre (máx. 16 letras)" style="flex:1"><button type="button" id="pfNickSave">Guardar</button></label>
-      <label id="pfEarsRow" hidden><span>Orejas de gato verdes</span><input type="checkbox" id="pfEars"></label>
-      <label id="pfShoesRow" hidden><span>Calzado</span><select id="pfFeet" style="flex:1"></select></label>
+      <div id="pfAccSec" hidden><div class="dsec">Accesorios</div><div id="pfAcc"></div></div>
       <div id="pfOthers" hidden><div class="dsec">Etiquetar a otros usuarios</div><div id="pfOthersList"></div></div>
     </div>
     <div class="page pane" id="pgSet" hidden>
@@ -428,6 +427,7 @@ window.FIREBASE_CONFIG = {
     return s;
   }
   /*I18N_END*/
+  [["Accesorios", "Accessories", "Аксессуары"], ["Poner", "Put on", "Надеть"], ["Quitar", "Take off", "Снять"], ["Puesto", "Worn", "Надето"], ["Quitado", "Not worn", "Не надето"], ["Orejas de gato rosadas", "Pink cat ears", "Розовые кошачьи ушки"]].forEach(function(r){TR[r[0]]=[r[1],r[2]];});
   [["Cargando RLPS… (puede tardar un poco)", "Loading RLPS… (this may take a while)", "Загрузка RLPS… (это может занять время)"], ["No se encontró rlps.html (súbelo junto a index.html)", "rlps.html was not found (upload it next to index.html)", "Файл rlps.html не найден (загрузите его рядом с index.html)"], ["Pulsa la bandera verde para empezar", "Press the green flag to start", "Нажмите зелёный флажок, чтобы начать"]].forEach(function(r){TR[r[0]]=[r[1],r[2]];});
   [["🗑 Borrar cuenta", "🗑 Delete account", "🗑 Удалить аккаунт"], ["Tu cuenta fue eliminada", "Your account was deleted", "Ваш аккаунт был удалён"]].forEach(function(r){TR[r[0]]=[r[1],r[2]];});
   TP.unshift(
@@ -1201,12 +1201,7 @@ window.FIREBASE_CONFIG = {
     if(document.activeElement!==$('pfTag'))$('pfTag').value=p.tag||'';
     $('pfTagNote').textContent=tok?'':'Necesitas rango 2 o más para usar etiquetas';
     if(document.activeElement!==$('pfNick'))$('pfNick').value=p.nick||'';
-    $('pfEarsRow').hidden=!isAdmin();$('pfEars').checked=p.ears!==false;
-    var ownI=(PURCH[me.id]&&PURCH[me.id].items)||{},fs=$('pfFeet');
-    $('pfShoesRow').hidden=!(ownI.clown||ownI.flip);
-    fs.textContent='';
-    [['none','Sin calzado']].concat(SHOP.filter(function(it){return ownI[it.id];}).map(function(it){return [it.id,it.name];})).forEach(function(o){var op=document.createElement('option');op.value=o[0];op.textContent=o[1];fs.appendChild(op);});
-    fs.value=feetOf(me.id)||'none';
+    renderAcc();
     var oth=$('pfOthers');oth.hidden=!tok;
     var box=$('pfOthersList');box.textContent='';
     if(!tok)return;
@@ -1229,7 +1224,7 @@ window.FIREBASE_CONFIG = {
   /* ---------- tienda, cosméticos y "escribiendo…" ---------- */
   var PURCH={},SHOP=[{id:'clown',name:'Zapatos de payaso',price:1250,desc:'Aparecen en tu foto de perfil'},{id:'flip',name:'Chanclas',price:800,desc:'Aparecen en tu foto de perfil'}];
   var FLIP_SVG="<g><ellipse cx=\"27\" cy=\"108\" rx=\"22\" ry=\"9.5\" fill=\"#2f9bff\" stroke=\"#154a7a\" stroke-width=\"2\"/><ellipse cx=\"27\" cy=\"107\" rx=\"17\" ry=\"6.5\" fill=\"#9fd8ff\"/><path d=\"M15 109 L27 101 L39 109\" stroke=\"#ffd400\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><circle cx=\"27\" cy=\"101\" r=\"2.6\" fill=\"#ff8a00\"/></g><g transform=\"translate(100,0) scale(-1,1)\"><ellipse cx=\"27\" cy=\"108\" rx=\"22\" ry=\"9.5\" fill=\"#2f9bff\" stroke=\"#154a7a\" stroke-width=\"2\"/><ellipse cx=\"27\" cy=\"107\" rx=\"17\" ry=\"6.5\" fill=\"#9fd8ff\"/><path d=\"M15 109 L27 101 L39 109\" stroke=\"#ffd400\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><circle cx=\"27\" cy=\"101\" r=\"2.6\" fill=\"#ff8a00\"/></g>";
-  var EARS_SVG="<g><g stroke-linejoin=\"round\"><polygon points=\"12,30 6,-14 46,6\" fill=\"#2fbf71\" stroke=\"#14532d\" stroke-width=\"3\"/><polygon points=\"17,22 13,-2 36,10\" fill=\"#9ff0c0\"/></g><g transform=\"translate(100,0) scale(-1,1)\" stroke-linejoin=\"round\"><polygon points=\"12,30 6,-14 46,6\" fill=\"#2fbf71\" stroke=\"#14532d\" stroke-width=\"3\"/><polygon points=\"17,22 13,-2 36,10\" fill=\"#9ff0c0\"/></g><g stroke=\"#111\" stroke-width=\"2.4\" stroke-linecap=\"round\" fill=\"none\"><path d=\"M3 54 Q-8 50 -18 52\"/><path d=\"M2 62 Q-8 62 -19 66\"/><path d=\"M5 70 Q-4 74 -14 79\"/><path d=\"M97 54 Q108 50 118 52\"/><path d=\"M98 62 Q108 62 119 66\"/><path d=\"M95 70 Q104 74 114 79\"/></g></g>",SHOES_SVG="<g><ellipse cx=\"27\" cy=\"106\" rx=\"27\" ry=\"12\" fill=\"#e5252a\" stroke=\"#4a0c0c\" stroke-width=\"2\"/><circle cx=\"14\" cy=\"103\" r=\"4\" fill=\"#ffd400\"/><circle cx=\"28\" cy=\"109\" r=\"3\" fill=\"#ffd400\"/><circle cx=\"40\" cy=\"102\" r=\"3\" fill=\"#ffd400\"/><path d=\"M2 112 Q27 123 52 112\" stroke=\"#222\" stroke-width=\"3\" fill=\"none\"/></g><g transform=\"translate(100,0) scale(-1,1)\"><ellipse cx=\"27\" cy=\"106\" rx=\"27\" ry=\"12\" fill=\"#e5252a\" stroke=\"#4a0c0c\" stroke-width=\"2\"/><circle cx=\"14\" cy=\"103\" r=\"4\" fill=\"#ffd400\"/><circle cx=\"28\" cy=\"109\" r=\"3\" fill=\"#ffd400\"/><circle cx=\"40\" cy=\"102\" r=\"3\" fill=\"#ffd400\"/><path d=\"M2 112 Q27 123 52 112\" stroke=\"#222\" stroke-width=\"3\" fill=\"none\"/></g>";
+  var EARS_SVG="<g><g stroke-linejoin=\"round\"><polygon points=\"12,30 6,-14 46,6\" fill=\"#ff7eb6\" stroke=\"#8a1c52\" stroke-width=\"3\"/><polygon points=\"17,22 13,-2 36,10\" fill=\"#ffd0e6\"/></g><g transform=\"translate(100,0) scale(-1,1)\" stroke-linejoin=\"round\"><polygon points=\"12,30 6,-14 46,6\" fill=\"#ff7eb6\" stroke=\"#8a1c52\" stroke-width=\"3\"/><polygon points=\"17,22 13,-2 36,10\" fill=\"#ffd0e6\"/></g><g stroke=\"#111\" stroke-width=\"2.4\" stroke-linecap=\"round\" fill=\"none\"><path d=\"M3 54 Q-8 50 -18 52\"/><path d=\"M2 62 Q-8 62 -19 66\"/><path d=\"M5 70 Q-4 74 -14 79\"/><path d=\"M97 54 Q108 50 118 52\"/><path d=\"M98 62 Q108 62 119 66\"/><path d=\"M95 70 Q104 74 114 79\"/></g></g>",SHOES_SVG="<g><ellipse cx=\"27\" cy=\"106\" rx=\"27\" ry=\"12\" fill=\"#e5252a\" stroke=\"#4a0c0c\" stroke-width=\"2\"/><circle cx=\"14\" cy=\"103\" r=\"4\" fill=\"#ffd400\"/><circle cx=\"28\" cy=\"109\" r=\"3\" fill=\"#ffd400\"/><circle cx=\"40\" cy=\"102\" r=\"3\" fill=\"#ffd400\"/><path d=\"M2 112 Q27 123 52 112\" stroke=\"#222\" stroke-width=\"3\" fill=\"none\"/></g><g transform=\"translate(100,0) scale(-1,1)\"><ellipse cx=\"27\" cy=\"106\" rx=\"27\" ry=\"12\" fill=\"#e5252a\" stroke=\"#4a0c0c\" stroke-width=\"2\"/><circle cx=\"14\" cy=\"103\" r=\"4\" fill=\"#ffd400\"/><circle cx=\"28\" cy=\"109\" r=\"3\" fill=\"#ffd400\"/><circle cx=\"40\" cy=\"102\" r=\"3\" fill=\"#ffd400\"/><path d=\"M2 112 Q27 123 52 112\" stroke=\"#222\" stroke-width=\"3\" fill=\"none\"/></g>";
   function feetOf(uid){
     var p=PROFS[uid]||{},own=(PURCH[uid]&&PURCH[uid].items)||{},f=p.feet;
     if(f==='none')return '';
@@ -1301,9 +1296,7 @@ window.FIREBASE_CONFIG = {
   }
   $('shopRef').onclick=renderShop;
   $('pfNickSave').onclick=function(){setProf(me.id,{nick:$('pfNick').value});};
-  $('pfEars').onchange=function(){setProf(me.id,{ears:this.checked});};
-  $('pfFeet').onchange=function(){setProf(me.id,{feet:this.value});};
-
+    
   var TYPING={},TYPSEEN={},typReady=false,typTimer=null,lastType=0,lastTypeTo=null;
   function typePing(to){
     if(!db||!me)return;
@@ -1754,6 +1747,27 @@ window.FIREBASE_CONFIG = {
     var f=$('rlFrame');
     try{if(document.fullscreenElement){document.exitFullscreen();}else if(f.requestFullscreen){f.requestFullscreen();}else if(f.webkitRequestFullscreen){f.webkitRequestFullscreen();}}catch(e){}
   };
+
+  /* ---------- accesorios: poner y quitar ---------- */
+  function renderAcc(){
+    if(!me)return;
+    var box=$('pfAcc'),own=(PURCH[me.id]&&PURCH[me.id].items)||{},items=[];
+    box.textContent='';
+    if(isAdmin())items.push({kind:'ears',name:'Orejas de gato rosadas',svg:EARS_SVG,vb:'-24 -18 148 100',w:104,h:70,on:hasEars(me.id)});
+    SHOP.forEach(function(it){
+      if(own[it.id])items.push({kind:'feet',id:it.id,name:it.name,svg:(it.id==='flip'?FLIP_SVG:SHOES_SVG),vb:'-2 90 104 36',w:104,h:36,on:feetOf(me.id)===it.id});
+    });
+    $('pfAccSec').hidden=!items.length;
+    items.forEach(function(it){
+      var row=el('div','mrow'),top=el('div','shopit');
+      var pv=el('span','shoeprev');pv.innerHTML='<svg viewBox="'+it.vb+'" width="'+it.w+'" height="'+it.h+'" style="overflow:visible">'+it.svg+'</svg>';top.appendChild(pv);
+      var tx=el('span','dtx');tx.appendChild(el('span','dn',it.name));tx.appendChild(el('span','dsub',it.on?'Puesto':'Quitado'));top.appendChild(tx);
+      row.appendChild(top);
+      var bt=el('button',it.on?'ghost':'',it.on?'Quitar':'Poner');bt.type='button';
+      bt.onclick=function(){if(it.kind==='ears')setProf(me.id,{ears:!it.on});else setProf(me.id,{feet:it.on?'none':it.id});};
+      row.appendChild(bt);box.appendChild(row);
+    });
+  }
 
   /* ---------- diálogos propios ---------- */
   var dlgCb=null;
