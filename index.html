@@ -200,6 +200,17 @@ input[type=checkbox]{width:20px;height:20px;padding:0;accent-color:var(--accent)
 #rlUI{position:absolute;inset:0;z-index:7;background:#000;color:#fff;display:flex;flex-direction:column}
 #rlUI .chhead{background:var(--surface);color:var(--text)}
 #rlFrame{flex:1;min-height:0;width:100%;border:0;background:#000}
+#mnUI{position:absolute;inset:0;z-index:7;background:#000;color:#fff;display:flex;flex-direction:column}
+#mnUI .chhead{background:var(--surface);color:var(--text)}
+#mnStage{position:relative;flex:1;min-height:0;overflow:hidden;background:#000}
+#mnYT{position:absolute;left:0;top:0;width:100%;height:100%;border:0;pointer-events:none}
+#mnCv{position:absolute;left:0;top:0;width:100%;height:100%;touch-action:none;user-select:none;-webkit-user-select:none}
+.mnbox{position:absolute;left:0;top:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;padding:14px;background:rgba(0,0,0,.55);overflow-y:auto}
+.mnp{background:var(--surface);color:var(--text);border-radius:16px;padding:16px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:10px}
+.mnp label{display:flex;align-items:center;gap:10px}.mnp label span{min-width:96px}
+.mnp input[type=number]{width:90px}
+.mnrank{font-size:64px;font-weight:800;text-align:center;color:#2ee66b;line-height:1.1}
+.mnrows{display:grid;grid-template-columns:1fr auto;gap:2px 12px;font-size:.92em}
 </style>
 </head>
 <body>
@@ -243,6 +254,32 @@ input[type=checkbox]{width:20px;height:20px;padding:0;accent-color:var(--accent)
     <div class="chhead"><button type="button" class="ghost" id="gmClose" aria-label="Cerrar">✖</button><div class="chtitle"><b id="gmTitle"></b><div id="gmStatus"></div></div></div>
     <div id="gmBody"></div>
     <div class="chbtns" id="gmBtns"></div>
+  </div>
+  <div id="mnUI" hidden>
+    <div class="chhead"><button type="button" class="ghost" id="mnClose" aria-label="Cerrar">✖</button><div class="chtitle"><b>🎵 Galaxy Collapse</b><div>Kurokotei · D F J K</div></div></div>
+    <div id="mnStage">
+      <div id="mnYT"></div>
+      <canvas id="mnCv"></canvas>
+      <div class="mnbox" id="mnMenu"><div class="mnp">
+        <div class="note">4 teclas: D F J K, o toca los círculos de abajo</div>
+        <label><span>Velocidad</span><select id="mnSpd" style="flex:1"><option value="900">Lenta</option><option value="650">Media</option><option value="450">Rápida</option></select></label>
+        <label><span>OD</span><select id="mnOd" style="flex:1"><option value="0">0</option><option value="5">5</option><option value="8">8</option></select></label>
+        <div class="note" id="mnWin"></div>
+        <label id="mnBpmRow"><span>BPM del mapa</span><input type="number" id="mnBpm" min="60" max="600" step="1"></label>
+        <label><span>Sincronía (ms)</span><input type="number" id="mnOff" step="10"></label>
+        <div class="note">Si las notas llegan antes que la música, baja el valor; si llegan después, súbelo.</div>
+        <label><span>Mapa</span><button type="button" class="ghost" id="mnImp">Importar .osu</button><button type="button" class="ghost" id="mnImpX" hidden>Quitar</button><input type="file" id="mnFile" accept=".osu" hidden></label>
+        <button type="button" id="mnPlay">▶ Jugar</button>
+        <button type="button" class="ghost" id="mnSilent" hidden>Jugar sin música</button>
+        <div class="note" id="mnMsg"></div>
+        <a class="lnk" href="https://www.youtube.com/watch?v=mCUDrBQ7L-s" target="_blank" rel="noopener noreferrer">🔗 Abrir la canción en YouTube</a>
+      </div></div>
+      <div class="mnbox" id="mnRes" hidden><div class="mnp">
+        <div class="mnrank" id="mnRank"></div>
+        <div class="mnrows" id="mnRows"></div>
+        <div class="mb"><button type="button" id="mnAgain">Reintentar</button><button type="button" class="ghost" id="mnExit">Cerrar</button></div>
+      </div></div>
+    </div>
   </div>
   <div id="rlUI" hidden>
     <div class="chhead"><button type="button" class="ghost" id="rlClose" aria-label="Cerrar">✖</button><div class="chtitle"><b>🕹️ RLPS</b><div id="rlStatus"></div></div><button type="button" class="ghost" id="rlFull" aria-label="Pantalla completa">⛶</button></div>
@@ -335,7 +372,7 @@ input[type=checkbox]{width:20px;height:20px;padding:0;accent-color:var(--accent)
       <div class="mrow"><div class="mb"><select id="gmUser" style="flex:1"></select></div>
         <div class="mb"><button type="button" id="gmTtt">❌⭕ Tres en raya</button><button type="button" id="gmRps">✊✋✌️ Piedra, papel o tijeras</button></div></div>
       <div class="dsec">🔤 Solo</div>
-      <div class="mrow"><div class="mb"><button type="button" id="gmWd1">🟩 Wordle (palabra del día)</button><button type="button" class="ghost" id="gmWd2">🎲 Wordle aleatorio</button><button type="button" id="gmRl">🕹️ RLPS</button></div></div>
+      <div class="mrow"><div class="mb"><button type="button" id="gmWd1">🟩 Wordle (palabra del día)</button><button type="button" class="ghost" id="gmWd2">🎲 Wordle aleatorio</button><button type="button" id="gmMn">🎵 Ritmo: Galaxy Collapse</button><button type="button" id="gmRl">🕹️ RLPS</button></div></div>
       <div class="dsec">🏅 Elo</div>
       <div class="note" id="myElo"></div>
       <div class="mb"><button type="button" class="ghost" id="eloC">♟ Ajedrez</button><button type="button" class="ghost" id="eloT">❌⭕ Tres en raya</button><button type="button" class="ghost" id="eloR">✊✋✌️ Piedra, papel o tijeras</button></div>
@@ -427,6 +464,11 @@ window.FIREBASE_CONFIG = {
     return s;
   }
   /*I18N_END*/
+  [["🎵 Ritmo: Galaxy Collapse", "🎵 Rhythm: Galaxy Collapse", "🎵 Ритм: Galaxy Collapse"], ["4 teclas: D F J K, o toca los círculos de abajo", "4 keys: D F J K, or tap the circles at the bottom", "4 клавиши: D F J K или нажимайте на круги внизу"], ["Velocidad", "Speed", "Скорость"], ["Lenta", "Slow", "Медленно"], ["Media", "Medium", "Средне"], ["Rápida", "Fast", "Быстро"], ["BPM del mapa", "Map BPM", "BPM карты"], ["Sincronía (ms)", "Sync (ms)", "Синхронизация (мс)"], ["Si las notas llegan antes que la música, baja el valor; si llegan después, súbelo.", "If the notes arrive before the music, lower the value; if they arrive after, raise it.", "Если ноты приходят раньше музыки, уменьшите значение; если позже — увеличьте."], ["Mapa", "Map", "Карта"], ["Importar .osu", "Import .osu", "Импорт .osu"], ["▶ Jugar", "▶ Play", "▶ Играть"], ["Jugar sin música", "Play without music", "Играть без музыки"], ["🔗 Abrir la canción en YouTube", "🔗 Open the song on YouTube", "🔗 Открыть песню на YouTube"], ["Reintentar", "Retry", "Повторить"], ["Cerrar", "Close", "Закрыть"], ["Cargando la canción…", "Loading the song…", "Загрузка песни…"], ["No se pudo leer ese mapa (.osu)", "Could not read that map (.osu)", "Не удалось прочитать эту карту (.osu)"], ["No se pudo cargar YouTube. Puedes jugar sin música.", "Could not load YouTube. You can play without music.", "Не удалось загрузить YouTube. Можно играть без музыки."], ["La canción no arrancó (el navegador o la app pueden estar bloqueando el audio). Puedes jugar sin música.", "The song did not start (the browser or app may be blocking audio). You can play without music.", "Песня не запустилась (браузер или приложение могут блокировать звук). Можно играть без музыки."]].forEach(function(r){TR[r[0]]=[r[1],r[2]];});
+  TP.unshift(
+    [/^🎵 Mapa importado: (\d+) notas$/,'🎵 Map imported: $1 notes','🎵 Карта импортирована: $1 нот'],
+    [/^YouTube no deja reproducir esta canción aquí \(error (.*)\)\. Puedes jugar sin música\.$/,'YouTube does not allow playing this song here (error $1). You can play without music.','YouTube не позволяет воспроизвести эту песню здесь (ошибка $1). Можно играть без музыки.']
+  );
   [["Accesorios", "Accessories", "Аксессуары"], ["Poner", "Put on", "Надеть"], ["Quitar", "Take off", "Снять"], ["Puesto", "Worn", "Надето"], ["Quitado", "Not worn", "Не надето"], ["Orejas de gato rosadas", "Pink cat ears", "Розовые кошачьи ушки"]].forEach(function(r){TR[r[0]]=[r[1],r[2]];});
   [["Cargando RLPS… (puede tardar un poco)", "Loading RLPS… (this may take a while)", "Загрузка RLPS… (это может занять время)"], ["No se encontró rlps.html (súbelo junto a index.html)", "rlps.html was not found (upload it next to index.html)", "Файл rlps.html не найден (загрузите его рядом с index.html)"], ["Pulsa la bandera verde para empezar", "Press the green flag to start", "Нажмите зелёный флажок, чтобы начать"]].forEach(function(r){TR[r[0]]=[r[1],r[2]];});
   [["🗑 Borrar cuenta", "🗑 Delete account", "🗑 Удалить аккаунт"], ["Tu cuenta fue eliminada", "Your account was deleted", "Ваш аккаунт был удалён"]].forEach(function(r){TR[r[0]]=[r[1],r[2]];});
@@ -1769,6 +1811,299 @@ window.FIREBASE_CONFIG = {
     });
   }
 
+  /* ---------- ritmo estilo osu!mania: Galaxy Collapse ---------- */
+  var MN_VID='mCUDrBQ7L-s';
+  var MNJ=[{n:'PERFECT',v:320,w:1,c:'#baffd0'},{n:'GREAT',v:300,w:1,c:'#2ee66b'},{n:'GOOD',v:200,w:2/3,c:'#a3e635'},{n:'OK',v:100,w:1/3,c:'#facc15'},{n:'MEH',v:50,w:1/6,c:'#fb923c'},{n:'MISS',v:0,w:0,c:'#ef4444'}];
+  var MN={player:null,ready:false,playing:false,base:0,frozen:0,off:0,started:false,silent:false,G:null,raf:0,to:0,ytLoading:false,ytQ:[],custom:null,down:[false,false,false,false],ptr:{},cv:null,cx:null,cw:0,ch:0,set:{spd:650,od:5,bpm:270,off:0}};
+  function mnWin(od){return [16,64-3*od,97-3*od,127-3*od,151-3*od,188-3*od];}
+  function mnJudge(abs,w){for(var i=0;i<6;i++){if(abs<=w[i])return i;}return -1;}
+  function mnRng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+  function mnGenChart(durMs,bpm){
+    var r=mnRng(270320),beat=60000/bpm,notes=[],t=2000,end=durMs-3000,lastLane=-1,lastT=[-999,-999,-999,-999];
+    function lvl(p){if(p<0.05)return 0;if(p<0.18)return 1;if(p<0.38)return 2;if(p<0.46)return 0;if(p<0.58)return 1;if(p<0.88)return 3;if(p<0.95)return 2;return 0;}
+    function pick(tt,avoid){var l,k=0;do{l=Math.floor(r()*4);k++;}while((l===avoid||tt-lastT[l]<90||(l===lastLane&&r()<0.8))&&k<12);return l;}
+    while(t<end){
+      var lv=lvl(t/durMs);
+      if(lv===0&&r()<0.35){t+=beat*2;continue;}
+      var l=pick(t,-1);
+      notes.push({t:Math.round(t),l:l});lastT[l]=t;lastLane=l;
+      if(lv>=2&&r()<(lv===3?0.22:0.12)){var l2=pick(t,l);if(l2!==l){notes.push({t:Math.round(t),l:l2});lastT[l2]=t;}}
+      t+=beat*(lv===0?2:(lv===3?(r()<0.45?0.5:1):(lv===2&&r()<0.15?0.5:1)));
+    }
+    return notes;
+  }
+  function mnParseOsu(txt){
+    var i=txt.indexOf('[HitObjects]');if(i<0)return null;
+    var lines=txt.slice(i).split(/\r?\n/),notes=[];
+    for(var k=1;k<lines.length;k++){
+      var ln=lines[k].trim();if(!ln)continue;if(ln.charAt(0)==='[')break;
+      var p=ln.split(','),x=parseFloat(p[0]),t=parseFloat(p[2]);
+      if(p.length<4||isNaN(x)||isNaN(t))continue;
+      notes.push({t:Math.round(t),l:Math.max(0,Math.min(3,Math.floor(x*4/512)))});
+    }
+    notes.sort(function(a,b){return a.t-b.t||a.l-b.l;});
+    var out=[];notes.forEach(function(n){var q=out[out.length-1];if(q&&q.t===n.t&&q.l===n.l)return;out.push(n);});
+    return out.length>=10?out:null;
+  }
+  function mnNewGame(notes,od){
+    var G={notes:[],q:[[],[],[],[]],qi:[0,0,0,0],w:mnWin(od),counts:[0,0,0,0,0,0],sumV:0,sumW:0,judged:0,combo:0,maxCombo:0,running:true,flash:null,fx:[null,null,null,null],end:0};
+    notes.forEach(function(n){var o={t:n.t,l:n.l,done:false};G.notes.push(o);G.q[n.l].push(o);if(n.t>G.end)G.end=n.t;});
+    G.end+=1500;
+    return G;
+  }
+  function mnApply(G,n,j,now){
+    n.done=true;G.counts[j]++;G.sumV+=MNJ[j].v;G.sumW+=MNJ[j].w;G.judged++;
+    if(j===5)G.combo=0;else{G.combo++;if(G.combo>G.maxCombo)G.maxCombo=G.combo;}
+    G.flash={j:j,t:now};G.fx[n.l]={t:now,j:j};
+  }
+  function mnPressSong(G,l,now){
+    var q=G.q[l];
+    while(G.qi[l]<q.length&&q[G.qi[l]].done)G.qi[l]++;
+    var n=q[G.qi[l]];if(!n)return -1;
+    var dt=now-n.t;if(dt<-G.w[5])return -1;
+    var j=mnJudge(Math.abs(dt),G.w);if(j<0)j=5;
+    mnApply(G,n,j,now);return j;
+  }
+  function mnAutoMiss(G,now){
+    for(var l=0;l<4;l++){
+      var q=G.q[l];
+      while(G.qi[l]<q.length){
+        var n=q[G.qi[l]];
+        if(n.done){G.qi[l]++;continue;}
+        if(now>n.t+G.w[5]){mnApply(G,n,5,now);G.qi[l]++;}else break;
+      }
+    }
+  }
+  function mnStats(G){
+    var N=G.notes.length||1,acc=G.judged?100*G.sumW/G.judged:100,accAll=100*G.sumW/N;
+    var score=Math.round(1000000*G.sumV/(320*N));
+    return {acc:acc,accAll:accAll,score:score};
+  }
+  function mnRank(acc){return acc>=100?'SS':(acc>=95?'S':(acc>=90?'A':(acc>=80?'B':(acc>=70?'C':'D'))));}
+  function mnNow(){return MN.playing?(performance.now()-MN.base+MN.set.off):MN.frozen;}
+  function mnAt(tEv){return MN.playing?(tEv-MN.base+MN.set.off):MN.frozen;}
+  function mnLoadSet(){
+    try{var s=JSON.parse(localStorage.getItem('esq-mn-set')||'null');if(s){MN.set.spd=s.spd||650;MN.set.od=(typeof s.od==='number')?s.od:5;MN.set.bpm=s.bpm||270;MN.set.off=s.off||0;}}catch(e){}
+    try{var m=JSON.parse(localStorage.getItem('esq-mn-map')||'null');MN.custom=(m&&m.length>=10)?m.map(function(a){return {t:a[0],l:a[1]};}):null;}catch(e){MN.custom=null;}
+  }
+  function mnShowSet(){
+    $('mnSpd').value=String(MN.set.spd);$('mnOd').value=String(MN.set.od);$('mnBpm').value=String(MN.set.bpm);$('mnOff').value=String(MN.set.off);
+    $('mnImpX').hidden=!MN.custom;$('mnBpmRow').hidden=!!MN.custom;
+    mnWinText();
+  }
+  function mnReadSet(){
+    var spd=parseInt($('mnSpd').value,10)||650,od=parseInt($('mnOd').value,10),bpm=parseFloat($('mnBpm').value),off=parseInt($('mnOff').value,10);
+    MN.set={spd:spd,od:isNaN(od)?5:od,bpm:(bpm>=60&&bpm<=600)?bpm:270,off:isNaN(off)?0:Math.max(-3000,Math.min(3000,off))};
+    try{localStorage.setItem('esq-mn-set',JSON.stringify(MN.set));}catch(e){}
+  }
+  function mnWinText(){
+    var w=mnWin(parseInt($('mnOd').value,10)||0);
+    $('mnWin').textContent='PERFECT ±'+w[0]+' · GREAT ±'+w[1]+' · GOOD ±'+w[2]+' · OK ±'+w[3]+' · MEH ±'+w[4]+' · MISS ±'+w[5]+' ms';
+  }
+  function mnOpen(){
+    mnLoadSet();mnShowSet();
+    $('mnUI').hidden=false;$('mnMenu').hidden=false;$('mnRes').hidden=true;$('mnMsg').textContent='';$('mnSilent').hidden=true;
+    mnResize();
+    if(!MN.raf)MN.raf=requestAnimationFrame(mnFrame);
+  }
+  function mnClose(){
+    cancelAnimationFrame(MN.raf);MN.raf=0;clearTimeout(MN.to);
+    MN.G=null;MN.started=false;MN.playing=false;
+    try{if(MN.player&&MN.ready)MN.player.pauseVideo();}catch(e){}
+    $('mnUI').hidden=true;
+  }
+  function mnResize(){
+    var st=$('mnStage'),cv=MN.cv;if(!cv)return;
+    var dpr=window.devicePixelRatio||1,w=st.clientWidth||300,h=st.clientHeight||500;
+    MN.cw=w;MN.ch=h;cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);
+    MN.cx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  window.addEventListener('resize',function(){if(!$('mnUI').hidden)mnResize();});
+  function mnEnsureYT(cb,fail){
+    if(window.YT&&YT.Player){cb();return;}
+    if(MN.ytLoading){MN.ytQ.push(cb);return;}
+    MN.ytLoading=true;MN.ytQ=[cb];
+    var prev=window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady=function(){if(prev){try{prev();}catch(e){}}var q=MN.ytQ;MN.ytQ=[];q.forEach(function(f){f();});};
+    var s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';
+    s.onerror=function(){MN.ytLoading=false;fail();};
+    document.head.appendChild(s);
+    setTimeout(function(){if(!(window.YT&&YT.Player)){MN.ytLoading=false;fail();}},10000);
+  }
+  function mnNoAudio(msg){
+    clearTimeout(MN.to);
+    $('mnMsg').textContent=msg;$('mnSilent').hidden=false;
+  }
+  function mnPlayer(cb){
+    if(MN.player&&MN.ready){cb();return;}
+    mnEnsureYT(function(){
+      if(MN.player){MN.pending=cb;return;}
+      var pv={controls:0,disablekb:1,fs:0,modestbranding:1,rel:0,playsinline:1,iv_load_policy:3},o=window.location&&window.location.origin;
+      if(o&&/^https?:/.test(o))pv.origin=o;
+      MN.pending=cb;
+      MN.player=new YT.Player('mnYT',{width:'100%',height:'100%',videoId:MN_VID,playerVars:pv,events:{
+        onReady:function(){MN.ready=true;var f=MN.pending;MN.pending=null;if(f)f();},
+        onStateChange:mnOnState,
+        onError:function(e){mnNoAudio('YouTube no deja reproducir esta canción aquí (error '+(e&&e.data)+'). Puedes jugar sin música.');}
+      }});
+    },function(){mnNoAudio('No se pudo cargar YouTube. Puedes jugar sin música.');});
+  }
+  function mnOnState(e){
+    var s=e.data;
+    if(s===1){
+      var ct=0;try{ct=MN.player.getCurrentTime();}catch(x){}
+      MN.base=performance.now()-ct*1000;MN.playing=true;
+      if(!MN.started&&!MN.G)mnBegin();
+    }else if(s===2||s===3){
+      if(MN.playing){MN.frozen=mnNow();MN.playing=false;}
+    }
+  }
+  function mnBegin(){
+    if(MN.started)return;
+    MN.started=true;clearTimeout(MN.to);
+    var dur=0;try{if(!MN.silent)dur=MN.player.getDuration()||0;}catch(e){}
+    var durMs=dur>30?dur*1000:404000;
+    var notes=MN.custom||mnGenChart(durMs,MN.set.bpm);
+    MN.G=mnNewGame(notes,MN.set.od);
+    MN.down=[false,false,false,false];
+    $('mnMenu').hidden=true;$('mnRes').hidden=true;
+    MN.lastSync=0;
+  }
+  function mnStart(){
+    mnReadSet();
+    $('mnMsg').textContent='Cargando la canción…';$('mnSilent').hidden=true;
+    MN.started=false;MN.silent=false;MN.G=null;
+    mnPlayer(function(){
+      try{MN.player.seekTo(0,true);MN.player.playVideo();}catch(e){}
+      clearTimeout(MN.to);
+      MN.to=setTimeout(function(){if(!MN.started)mnNoAudio('La canción no arrancó (el navegador o la app pueden estar bloqueando el audio). Puedes jugar sin música.');},12000);
+    });
+  }
+  function mnStartSilent(){
+    mnReadSet();
+    try{if(MN.player&&MN.ready)MN.player.pauseVideo();}catch(e){}
+    MN.silent=true;MN.started=false;MN.playing=true;MN.base=performance.now();
+    mnBegin();
+  }
+  function mnFinish(){
+    var G=MN.G;if(!G||!G.running)return;
+    G.running=false;
+    try{if(MN.player&&MN.ready&&!MN.silent)MN.player.pauseVideo();}catch(e){}
+    var st=mnStats(G);
+    $('mnRank').textContent=mnRank(st.accAll);
+    var box=$('mnRows');box.textContent='';
+    function row(a,b){box.appendChild(el('span',null,a));var s=el('span',null,b);s.style.textAlign='right';box.appendChild(s);}
+    row('Score',String(st.score).replace(/\B(?=(\d{3})+(?!\d))/g,','));
+    row('Accuracy',st.accAll.toFixed(2)+'%');
+    row('Max combo',String(G.maxCombo));
+    for(var i=0;i<6;i++)row(MNJ[i].n,String(G.counts[i]));
+    $('mnRes').hidden=false;
+  }
+  function mnFrame(){
+    MN.raf=requestAnimationFrame(mnFrame);
+    var c=MN.cx;if(!c||$('mnUI').hidden)return;
+    var G=MN.G,W=MN.cw,H=MN.ch,now=G?mnNow():0;
+    if(G&&G.running){
+      var pn=performance.now();
+      if(!MN.silent&&MN.playing&&MN.player&&pn-MN.lastSync>1000){
+        MN.lastSync=pn;
+        try{var ct=MN.player.getCurrentTime()*1000,d=ct-(pn-MN.base);if(Math.abs(d)>30){MN.base=MN.base-d*0.3;}}catch(e){}
+      }
+      mnAutoMiss(G,now);
+      if(now>G.end)mnFinish();
+    }
+    c.clearRect(0,0,W,H);
+    var pw=Math.min(W,440),px=(W-pw)/2,lw=pw/4,R=Math.min(lw*0.4,34),ry=H-R-26,D=ry+R,spd=MN.set.spd;
+    c.fillStyle='rgba(0,0,0,0.62)';c.fillRect(px,0,pw,H);
+    c.strokeStyle='rgba(120,255,170,0.18)';c.lineWidth=1;
+    for(var i=0;i<=4;i++){c.beginPath();c.moveTo(px+i*lw,0);c.lineTo(px+i*lw,H);c.stroke();}
+    if(G){
+      c.shadowColor='rgba(46,230,107,0.6)';c.shadowBlur=8;
+      c.fillStyle='#22c55e';c.strokeStyle='#bbf7d0';c.lineWidth=2;
+      for(var k=0;k<G.notes.length;k++){
+        var n=G.notes[k];if(n.done)continue;
+        var y=ry-(n.t-now)*D/spd;
+        if(y>H+R)continue;
+        if(y<-R)break;
+        c.beginPath();c.arc(px+n.l*lw+lw/2,y,R,0,Math.PI*2);c.fill();c.stroke();
+      }
+      c.shadowBlur=0;
+    }
+    for(var l=0;l<4;l++){
+      var cx=px+l*lw+lw/2;
+      c.beginPath();c.arc(cx,ry,R,0,Math.PI*2);
+      if(MN.down[l]){c.fillStyle='rgba(46,230,107,0.38)';c.fill();}
+      c.strokeStyle='#9dffbf';c.lineWidth=3;c.stroke();
+      if(G&&G.fx[l]){var age=now-G.fx[l].t;if(age<260&&age>=0){c.beginPath();c.arc(cx,ry,R+age*0.09,0,Math.PI*2);c.strokeStyle='rgba(186,255,208,'+(1-age/260)+')';c.lineWidth=3;c.stroke();}}
+    }
+    if(G){
+      var st=mnStats(G);
+      c.textBaseline='top';c.font='700 18px system-ui,sans-serif';
+      c.fillStyle='#fff';c.textAlign='right';c.fillText(String(st.score).replace(/\B(?=(\d{3})+(?!\d))/g,','),px+pw-10,8);
+      c.textAlign='left';c.fillText(st.acc.toFixed(2)+'%',px+10,8);
+      if(G.combo>1){c.textAlign='center';c.font='800 34px system-ui,sans-serif';c.fillStyle='rgba(186,255,208,0.9)';c.fillText(String(G.combo),W/2,H*0.28);}
+      if(G.flash){
+        var fa=now-G.flash.t;
+        if(fa<450&&fa>=0){c.globalAlpha=1-fa/450;c.textAlign='center';c.font='800 24px system-ui,sans-serif';c.fillStyle=MNJ[G.flash.j].c;c.fillText(MNJ[G.flash.j].n,W/2,H*0.4);c.globalAlpha=1;}
+      }
+    }
+  }
+  var MN_KEYS={d:0,f:1,j:2,k:3};
+  function mnPress(l,tEv){
+    var G=MN.G;if(!G||!G.running)return;
+    MN.down[l]=true;
+    mnPressSong(G,l,mnAt(tEv));
+  }
+  function mnTime(e){return (e.timeStamp&&e.timeStamp<1e12)?e.timeStamp:performance.now();}
+  document.addEventListener('keydown',function(e){
+    if($('mnUI').hidden||e.ctrlKey||e.metaKey||e.altKey)return;
+    var a=document.activeElement;if(a&&/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName))return;
+    var l=MN_KEYS[(e.key||'').toLowerCase()];
+    if(l===undefined)return;
+    e.preventDefault();if(e.repeat)return;
+    mnPress(l,mnTime(e));
+  });
+  document.addEventListener('keyup',function(e){var l=MN_KEYS[(e.key||'').toLowerCase()];if(l!==undefined)MN.down[l]=false;});
+  function mnLane(e){
+    var r=MN.cv.getBoundingClientRect(),W=r.width,pw=Math.min(W,440),px=(W-pw)/2,x=e.clientX-r.left;
+    return Math.max(0,Math.min(3,Math.floor((x-px)/(pw/4))));
+  }
+  MN.cv=$('mnCv');MN.cx=MN.cv.getContext?MN.cv.getContext('2d'):null;
+  MN.cv.addEventListener('pointerdown',function(e){
+    var l=mnLane(e);MN.ptr[e.pointerId]=l;
+    try{MN.cv.setPointerCapture(e.pointerId);}catch(x){}
+    e.preventDefault();mnPress(l,mnTime(e));
+  });
+  function mnUp(e){var l=MN.ptr[e.pointerId];if(l!==undefined){delete MN.ptr[e.pointerId];MN.down[l]=false;}}
+  MN.cv.addEventListener('pointerup',mnUp);
+  MN.cv.addEventListener('pointercancel',mnUp);
+  $('gmMn').onclick=mnOpen;
+  $('mnClose').onclick=mnClose;
+  $('mnExit').onclick=mnClose;
+  $('mnPlay').onclick=mnStart;
+  $('mnSilent').onclick=mnStartSilent;
+  $('mnAgain').onclick=function(){
+    MN.G=null;MN.started=false;MN.playing=false;$('mnRes').hidden=true;$('mnMenu').hidden=false;$('mnMsg').textContent='';$('mnSilent').hidden=true;
+    mnShowSet();
+    try{if(MN.player&&MN.ready)MN.player.pauseVideo();}catch(e){}
+  };
+  $('mnOd').onchange=mnWinText;
+  $('mnOff').onchange=mnReadSet;
+  $('mnImp').onclick=function(){$('mnFile').click();};
+  $('mnFile').onchange=function(){
+    var f=this.files[0];this.value='';if(!f)return;
+    var fr=new FileReader();
+    fr.onload=function(){
+      var notes=mnParseOsu(String(fr.result||''));
+      if(!notes){toast('No se pudo leer ese mapa (.osu)');return;}
+      MN.custom=notes;
+      try{localStorage.setItem('esq-mn-map',JSON.stringify(notes.map(function(n){return [n.t,n.l];})));}catch(e){}
+      mnShowSet();toast('🎵 Mapa importado: '+notes.length+' notas');
+    };
+    fr.readAsText(f);
+  };
+  $('mnImpX').onclick=function(){MN.custom=null;try{localStorage.removeItem('esq-mn-map');}catch(e){}mnShowSet();};
+
   /* ---------- diálogos propios ---------- */
   var dlgCb=null;
   function uiDialog(msg,opts,cb){
@@ -1883,7 +2218,7 @@ window.FIREBASE_CONFIG = {
   }
   function stopInbox(){
     inboxUnsubs.forEach(function(u){try{u();}catch(e){}});inboxUnsubs=[];
-    closeDm();leaveCall();leaveGame(true);leaveGm(true);rlClose();hideChInc();lastPeerSnap=null;cpList=[];prevPeers=0;ACCS={};accsReady=false;selfDeleting=false;ROLES={};PROFS={};PURCH={};ELO={};TYPING={};TYPSEEN={};typReady=false;if(typTimer){clearInterval(typTimer);typTimer=null;}PRES={};DMIN=[];DMOUT=[];FIXEDL=[];MENT=[];if(presTimer){clearInterval(presTimer);presTimer=null;}renderPins();$('callOpen').textContent='📞';
+    closeDm();leaveCall();leaveGame(true);leaveGm(true);rlClose();mnClose();hideChInc();lastPeerSnap=null;cpList=[];prevPeers=0;ACCS={};accsReady=false;selfDeleting=false;ROLES={};PROFS={};PURCH={};ELO={};TYPING={};TYPSEEN={};typReady=false;if(typTimer){clearInterval(typTimer);typTimer=null;}PRES={};DMIN=[];DMOUT=[];FIXEDL=[];MENT=[];if(presTimer){clearInterval(presTimer);presTimer=null;}renderPins();$('callOpen').textContent='📞';
   }
 
   /* ---------- llamada grupal del chat (WebRTC en malla) ---------- */
